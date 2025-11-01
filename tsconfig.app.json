@@ -18,7 +18,35 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".", // Add this line
+    "paths": {
+      // Add this block
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@models/*": [
+        "./src/models/*"
+      ],
+      "@stores/*": [
+        "./src/stores/*"
+      ],
+      "@common/*": [
+        "./src/common/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@features/*": [
+        "./src/features/*"
+      ],
+      "@typings": [
+        "typings.d"
+      ]
+    },
   },
   "include": ["src"]
 }
