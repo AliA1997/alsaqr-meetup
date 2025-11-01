@@ -91,8 +91,8 @@ const ConfirmModal = observer(({
   confirmButtonClassNames,
   confirmButtonText
 }: React.PropsWithChildren<ConfirmModalProps>) => {
-  const { feedStore } = useStore();
-  const { loadingUpsert } = feedStore;
+  const { modalStore } = useStore();
+  const { loadingUpsert } = modalStore;
   const [submitting, setSubmitting] = useState<boolean>(false)
   return (
   <ModalPortal>

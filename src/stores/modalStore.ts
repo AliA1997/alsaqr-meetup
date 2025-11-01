@@ -8,6 +8,7 @@ export default class ModalStore {
     }
     
     loadingInitial = false;
+    loadingUpsert = false;
     modalToShow: React.ReactNode | undefined = undefined;
     // showLoginModal = false;
     showModal = (modalToShow: React.ReactNode) => {

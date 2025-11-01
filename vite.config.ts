@@ -25,8 +25,7 @@ export default defineConfig({
     proxy: {
        '/api': {
         changeOrigin: true,
-        // target: 'https://api.alsaqr.app/', // your backend server URL
-        target: "https://localhost:32771/",
+        target: 'https://api.alsaqr.app/',
         secure: false
        },
    },

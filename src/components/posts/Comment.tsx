@@ -1,6 +1,3 @@
-
-import { UploadIcon } from "@heroicons/react/outline";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
     useEffect,
@@ -18,15 +15,10 @@ import {
 } from "@utils/index";
 import { useStore } from "@stores/index";
 import { LoginModal } from "@common/AuthModals";
-import { convertDateToDisplay, formatTimeAgo } from "@utils/index";
-import { BookmarkedIconButton, LikesIconButton, RePostedIconButton } from "@common/IconButtons";
+import { convertDateToDisplay } from "@utils/index";
+import { LikesIconButton, RePostedIconButton } from "@common/IconButtons";
 
-import { TrashIcon } from "@heroicons/react/solid";
-import MoreSection from "@common/MoreSection";
-import { ConfirmModal } from "@common/Modal";
 import { TagOrLabel } from "@common/Titles";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import CommentPDF from "@components/pdf/CommentPdf";
 import { OptimizedImage, OptimizedPostImage } from "@common/Image";
 
 interface Props {
@@ -43,17 +35,16 @@ function CommentComponent({
     const navigate = useNavigate();
     const { authStore, commentFeedStore, modalStore } = useStore();
     const { currentSessionUser } = authStore;
-    const { showModal, closeModal } = modalStore;
+    const { showModal } = modalStore;
     const [mounted, setMounted] =useState<boolean>(false);
     const {
         rePostComment,
         likedComment,
-        loadComments,
-        deleteYourComment
+        loadComments
     } = commentFeedStore;
     const [isRePosted, setIsRePosted] = useState<boolean>(false);
     const [isLiked, setIsLiked] = useState<boolean>(false);
-    const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+    const [_, setIsBookmarked] = useState<boolean>(false);
     const userId = useMemo(() => currentSessionUser ? currentSessionUser.id : "", [currentSessionUser]);
 
     const initiallyBooleanValues = useRef<{
@@ -171,60 +162,6 @@ function CommentComponent({
             setIsRePosted(beforeUpdate);
         }
     };
-    
-    const onBookmarkComment = async () => {
-        const beforeUpdate = isRePosted;
-        try {
-            await checkUserIsLoggedInBeforeUpdatingComment(async () => {
-                setIsRePosted(!isRePosted);
-
-                await rePostComment({
-                    statusId: commentToDisplay.id,
-                    userId: userId!,
-                    reposted: isRePosted
-                });
-            });
-        } catch {
-            setIsRePosted(beforeUpdate);
-        }
-    }
-
-
-    const moreOptions = useMemo(() => {
-        const defaultOpts = [];
-
-        if (commentToDisplay.userId === currentSessionUser?.id)
-            defaultOpts.push({
-                title: 'Delete Your Comment',
-                onClick: async () => {
-                    showModal(
-                        <ConfirmModal
-                            title="Delete this Comment"
-                            confirmButtonClassNames="bg-red-700 text-gray-100"
-                            onClose={() => closeModal()}
-                            declineButtonText="Cancel"
-                            confirmFunc={async () => {
-                                await deleteYourComment(commentToDisplay.id);
-                                closeModal();
-                                refreshComments();
-                            }}
-                            confirmMessage="Are you sure you want to delete this comment forever?"
-                            confirmButtonText="Delete Comment"
-                        >
-                            <CommentComponent
-                                commentToDisplay={commentToDisplay}
-                                onlyDisplay={true}
-                            />
-                        </ConfirmModal>
-                    )
-
-                },
-                Icon: TrashIcon,
-            });
-
-        return defaultOpts;
-    }, [commentToDisplay.id]);
-
 
     return (
         <div
@@ -303,7 +240,6 @@ function CommentComponent({
                             .
                         </p>
                         <TimeAgo
-                            className="text-sm text-gray-500 dark:text-gray-400"
                             date={convertDateToDisplay(commentToDisplay?.createdAt)}
                         />
                     </div>
@@ -323,14 +259,6 @@ function CommentComponent({
 
             {!onlyDisplay && (
                 <>
-                    {moreOptions.length ?
-                        (
-                            <MoreSection
-                                moreOptions={moreOptions}
-                            />
-                        )
-                        : null
-                    }
                     <div className="mt-5 flex justify-between">
                         <RePostedIconButton
                             onClick={(e) => stopPropagationOnClick(e, onRepostComment)}
@@ -344,38 +272,6 @@ function CommentComponent({
                             isLiked={isLiked}
                             disabled={onlyDisplay ?? false}
                         />
-                        <div className="flex gap-2">
-                            <BookmarkedIconButton
-                                onClick={(e) => stopPropagationOnClick(e, onBookmarkComment)}
-                                isBookmarked={isBookmarked}
-                                disabled={onlyDisplay ?? false}
-                            />
-                            <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                className="flex cursor-pointer item-center space-x-3 text-gray-400"
-                                disabled={onlyDisplay ?? false}
-                            >
-                                {commentToDisplay.createdAt ? (
-                                    <PDFDownloadLink 
-                                        fileName={`${commentToDisplay.id}.pdf`}
-                                        document={
-                                        <CommentPDF 
-                                            commentToDisplay={commentToDisplay} 
-                                            showLabel={showLabel ?? false} 
-                                            userId={currentSessionUser?.id ?? ''}
-                                            createdAt={formatTimeAgo(convertDateToDisplay(commentToDisplay.createdAt))}
-                                        />
-                                        }>
-                                        <UploadIcon className="h-5 w-5" />
-                                    </PDFDownloadLink>
-
-                                ) : (
-                                        <UploadIcon className="h-5 w-5" />
-
-                                )}
-                            </motion.button>
-                        </div>
                     </div>
                 </>
             )}
