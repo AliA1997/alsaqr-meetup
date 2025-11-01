@@ -1,7 +1,6 @@
 import Auth from '@utils/auth';
-import { DEFAULT_USER_REGISTRATION_FORM } from '@utils/constants';
 import { makeAutoObservable } from 'mobx';
-import { User, UserRegisterForm } from 'typings';
+import { User } from 'typings';
 
 
 export default class AuthStore {
@@ -23,20 +22,9 @@ export default class AuthStore {
   }
   loadingRegistration: boolean = false;
   loadingUpsert: boolean = false;
-  currentStepInUserRegistration: number | undefined = 0;
-  currentRegistrationForm: UserRegisterForm = DEFAULT_USER_REGISTRATION_FORM;
 
-  setLoadingRegistration = (val: boolean) => {
-    this.loadingRegistration = val;
-  }
   setLoadingUpsert = (val: boolean) => {
     this.loadingUpsert = val;
-  }
-  setCurrentStepInUserRegistration = (val: number | undefined) => {
-    this.currentStepInUserRegistration = val;
-  }
-  setCurrentRegistrationForm = (val: UserRegisterForm) => {
-    this.currentRegistrationForm = val;
   }
 
   setCurrentSessionUser = (currentUserPayload: User | undefined) => {

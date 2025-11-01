@@ -31,7 +31,7 @@ export default class EventsFeedStore {
     eventRegistry: Map<number, EventRecord> = new Map<number, EventRecord>();
 
     eventToViewId: number | undefined;
-    setEventToViewId = (val: number) => {
+    setEventToViewId = (val: number | undefined) => {
         this.eventToViewId = val;
     }
     setPagingParams = (pagingParams: PagingParams) => {

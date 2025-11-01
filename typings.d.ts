@@ -1,10 +1,4 @@
 
-interface CommonReduxTweetsState {
-  searchQry: string;
-  page: number;
-  limit: number;
-}
-
 export enum TypeOfFeed {
   Feed = "feed",
   Explore = "explore",
@@ -36,15 +30,6 @@ export enum MessageType {
   All = "All",
   Sent = "Sent",
   Direct = "Direct"
-}
-
-export enum CommonUpsertBoxTypes {
-  Post = "Post",
-  List = "List",
-  Community = "Community",
-  UpdateCommunity = "Update-Community",
-  CommunityDiscussion = "CommunityDiscussion",
-  Register = "Register"
 }
 
 
@@ -185,61 +170,6 @@ export interface CommentToDisplay extends Comment {
   likers: User[]
 }
 
-export interface CreateListOrCommunityFormDto extends CreateListOrCommunityForm {
-  usersAdded: string[];
-  postsAdded: string[];
-}
-
-export interface CreateListOrCommunityForm {
-  name: string;
-  avatarOrBannerImage: string;
-  isPrivate: "private" | "public";
-  tags: string[];
-  usersAdded: UserItemToDisplay[];
-  postsAdded: PostToDisplay[];
-}
-
-export interface ListRecord {
-  id: string;
-  userId: string;
-  name: string;
-  avatar?: string;
-  bannerImage?: string;
-  createdAt: string;
-  updatedAt: string;
-  _rev: string;
-  _type: "list";
-}
-
-// export interface ListRecordToDisplay extends ListRecord {
-//   listCreator: string;
-//   listCreatorProfileImg: string;
-// }
-
-export interface ListToDisplay {
-  list: ListRecordToDisplay,
-  savedBy: UserInfo
-}
-
-export interface CommunityRecord {
-  id: string;
-  userId: string
-  name: string;
-  avatar: string;
-  createdAt: string;
-  updatedAt: string;
-  _rev: string;
-  _type: "community";
-  isPrivate: boolean;
-  tags: string[];
-  joinedUsersToDisplay: User[];
-}
-
-export interface CommunityRecordToDisplay extends CommunityRecord {
-  founder: string;
-  founderProfileImg: string;
-}
-
 export enum  RelationshipType {
   Joined = 'JOINED',
   Invited = 'INVITED',
@@ -249,39 +179,6 @@ export enum  RelationshipType {
   None = 'NONE'
 };
 
-export interface CommunityToDisplay {
-  community: CommunityRecordToDisplay,
-  founder: UserInfo,
-  relationshipType: RelationshipType,
-}
-
-export interface CommunityAdminInfo {
-  community: CommunityRecordToDisplay;
-  isFounder: boolean;
-  founder: UserInfo;
-  inviteRequestedUsers: User[]; 
-  invitedCount: number;
-  joinedCount: number;
-}
-// CALL apoc.trigger.add('create_list_notification', 
-// 'UNWIND $createdNodes AS node
-//  WHERE labels(node)[0] = "List"
-//  MATCH (owner:User)-[:OWNS]->(node)
-//  CREATE (n:Notification {
-//    id: apoc.text.format("notification_%s", [randomUUID()]),
-//    message: "New list created by " + owner.username,
-//    read: false,
-//    relatedEntityId: node.id,
-//     link: null,
-//    createdAt: datetime(),
-//    updatedAt: null,
-//    _rev: null,
-//    _type: "notification",
-//    notificationType: "new_list"
-//  })
-//  CREATE (n)-[:NOTIFIES]->(owner)
-//  RETURN count(*)', 
-// {phase: 'after'})
 export interface NotificationRecord extends CommonRecordBody {
   id: string;
   message: string;
@@ -344,31 +241,6 @@ export interface MessageHistoryToDisplay {
   receiverUsername: string;
   messageCount: any;
   lastMessageDate: any;
-}
-
-export interface ExploreToDisplay {
-  title: string;
-  url: string;
-  urlToImage: string;
-}
-
-export interface ExploreNewsSourceToDisplay {
-  id: string;
-  name: string;
-  category: string;
-  description: string;
-  url: string;
-}
-
-export enum ExploreTabs {
-  Popular = 'popular',
-  AlJazeeraEnglish = 'al-jazeera-english',
-  Argaam = 'argaam',
-  BleacherReport = 'bleacher-report',
-  CryptoCoinsNews = 'crypto-coins-news',
-  HackerNews = 'hacker-news',
-  SABQ = 'sabq',
-
 }
 
 // New types based on the code snippets

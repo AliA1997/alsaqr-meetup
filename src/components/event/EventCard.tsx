@@ -3,6 +3,7 @@ import { TagOrLabel } from "@common/Titles";
 import { HowSimilarKeys } from "@models/enums";
 import type { EventRecord } from "@models/event";
 import { useStore } from "@stores/index";
+import { HOW_SIMILAR_LABEL_MAP } from "@utils/constants";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 
@@ -30,19 +31,13 @@ export default observer(function EventCard({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     eventsFeedStore?.setEventToViewId?.(event.id);
-    navigate(`/events/${event.id}`);
+    navigate(`/events/${event.slug}`);
   };
 
   const SimilarLabel = () => {
     if (!howSimilar) return null;
 
-    const labelMap = {
-      [HowSimilarKeys.NotSimilar]: { text: "Not a Match", color: "danger" },
-      [HowSimilarKeys.KindaSimilar]: { text: "Ok Match", color: "info" },
-      [HowSimilarKeys.MostSimilar]: { text: "Good Match", color: "success" },
-    };
-
-    const label = labelMap[howSimilar];
+    const label = HOW_SIMILAR_LABEL_MAP[howSimilar];
     return (
       <TagOrLabel
         className="absolute bottom-1 right-0 m-0"
@@ -61,7 +56,7 @@ export default observer(function EventCard({
 
   return (
     <a
-      href={`/events/${event.id}`}
+      href={`/events/${event.slug}`}
       onClick={handleClick}
       className={`block transition-transform duration-200 hover:scale-[1.02] ${classNames ?? ""}`}
     >

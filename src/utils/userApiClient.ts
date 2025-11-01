@@ -11,6 +11,12 @@ export const userApiClient = {
     
     getLocalGuides: (params: URLSearchParams) => 
         axios.get(`/api/LocalGuides`, { params }).then(axiosResponseBody),
+
+    getLocalGuideDetails: (localGuideId: number, params: URLSearchParams) => 
+        axios.get(`/api/LocalGuideDetails/${localGuideId}`, { params }).then(axiosResponseBody),
+
+    getNearbyLocalGuidesByCurrentLocalGuide: (localGuideId: number, params: URLSearchParams) => 
+        axios.get(`/api/LocalGuideDetails/${localGuideId}/nearby`, { params }).then(axiosResponseBody),
     getUserProfile: (username: string) => 
         axios.get(`/api/profile/${username}`).then(axiosResponseBody),
 

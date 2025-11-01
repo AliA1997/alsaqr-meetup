@@ -34,8 +34,18 @@ export enum TypeOfFeeds {
   MyEvents = 5
 }
 
+export enum TypeOfMarquee {
+  Event = 1,
+  Group = 2,
+  LocalGuide = 3
+}
+
 export enum HowSimilarKeys {
   NotSimilar = 1,
   KindaSimilar = 2,
-  MostSimilar = 3
+  MostSimilar = 3,
+  FarAway = 4,
+  SomewhatFar = 5,
+  Nearby = 6,
+  WalkingDistance = 7
 }

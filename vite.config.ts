@@ -26,7 +26,7 @@ export default defineConfig({
        '/api': {
         changeOrigin: true,
         // target: 'https://api.alsaqr.app/', // your backend server URL
-        target: "https://localhost:32769/",
+        target: "https://localhost:32771/",
         secure: false
        },
    },

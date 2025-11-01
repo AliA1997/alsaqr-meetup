@@ -7,5 +7,7 @@ export const groupsApiClient = {
     getMyGroups: (params: URLSearchParams | undefined) =>
         axios.get(`/api/Groups/my`, { params }).then(axiosResponseBody),
     getGroupDetails: (groupId: number, params: URLSearchParams | undefined) =>
-        axios.get(`/api/Groups/${groupId}/details`, { params }).then(axiosResponseBody),
+        axios.get(`/api/GroupDetails/${groupId}`, { params }).then(axiosResponseBody),
+    getSimilarGroups: (groupId: number, params: URLSearchParams | undefined) =>
+        axios.get(`/api/GroupDetails/${groupId}/similar`, { params }).then(axiosResponseBody),
 }

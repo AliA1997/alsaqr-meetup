@@ -1,6 +1,7 @@
 
 export interface GroupRecord {
     id: number;
+    slug: string;
     name: string;
     description: string;
     images: any[];
