@@ -5,11 +5,13 @@ export interface CommonLinkProps {
   onClick: Function;
   activeInd?: boolean;
   classNames?: string;
+  testId?: string;
 }
 
 export function CommonLink(props: React.PropsWithChildren<CommonLinkProps>) {
   return (
     <div
+      data-testid={props.testId ?? ""}
       onClick={(e) => stopPropagationOnClick(e, props.onClick)}
       className={`
         ${

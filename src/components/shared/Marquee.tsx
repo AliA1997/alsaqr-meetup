@@ -59,16 +59,19 @@ export default function Marquee({ marqueRecords, typeOfMarquee, similarByDistanc
                         >
                             {typeOfMarquee === TypeOfMarquee.Event
                                 ? <EventCard 
+                                    testId="similareventcard"
                                     event={marqueeRecord as EventRecord} 
                                     howSimilar={howSimilar} 
                                     showDistance={true} 
-                                    />
+                                   />
                                 : typeOfMarquee === TypeOfMarquee.LocalGuide
                                     ? <LocalGuideCard 
+                                        testId="similarlocalguidecard"
                                         localGuide={marqueeRecord as LocalGuideRecord} 
                                         howSimilar={howSimilar}
                                       />
                                     : <GroupCard 
+                                        testId="similargroupcard"
                                         group={marqueeRecord as GroupRecord} 
                                         howSimilar={howSimilar}
                                      />}

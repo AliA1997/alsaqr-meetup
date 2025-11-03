@@ -10,7 +10,7 @@ export default function LocalGuideDetailsCard({
   const userInfo = useMemo(() => localGuide.userInfo, [localGuide]);
   
   return (
-    <div className="flex flex-col">
+    <div data-testid="localguidedetailscard" className="flex flex-col">
       <section className="flex w-full flex-col py-4">
         {/* Header with name and basic info */}
         <div className="flex w-full flex-col space-y-4 px-4 py-2 lg:px-12">

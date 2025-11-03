@@ -10,7 +10,7 @@ export default function GroupDetailsCard({
 }) {
   
   return (
-    <div className="flex flex-col">
+    <div data-testid="groupdetailscard" className="flex flex-col">
 
       <section className="flex w-full flex-col py-4 md:flex-row">
         <Carousel images={group.images} entityName={group.name} />

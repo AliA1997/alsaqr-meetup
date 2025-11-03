@@ -12,6 +12,7 @@ interface EventCardProps {
   howSimilar?: HowSimilarKeys;
   classNames?: string;
   showDistance?: boolean;
+  testId?: string;
 }
 
 export default observer(function EventCard({
@@ -19,6 +20,7 @@ export default observer(function EventCard({
   howSimilar,
   classNames,
   showDistance,
+  testId
 }: EventCardProps) {
   const { eventsFeedStore } = useStore();
   const navigate = useNavigate();
@@ -56,6 +58,8 @@ export default observer(function EventCard({
 
   return (
     <a
+      title="e"
+      data-testid={testId ?? "eventcard"}
       href={`/events/${event.slug}`}
       onClick={handleClick}
       className={`block transition-transform duration-200 hover:scale-[1.02] ${classNames ?? ""}`}
@@ -73,11 +77,22 @@ export default observer(function EventCard({
 
         {/* Content */}
         <div className="p-2 pt-0">
-          <h3 className="line-clamp-2 max-w-[180px] text-sm font-medium leading-tight sm:text-base">
+          <h3 
+            data-testid="eventcardname"
+            className="line-clamp-2 max-w-[180px] text-sm font-medium leading-tight sm:text-base"
+          >
             {event.name}
           </h3>
-          <p className="text-sm text-gray-500">{hostedCities}</p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p
+            data-testid="eventhostedcities"
+            className="text-sm text-gray-500"
+          >
+            {hostedCities}
+          </p>
+          <p 
+            data-testid="eventgroupname"
+            className="text-xs text-gray-400 mt-1"
+          >
             Hosted by {event.groupName}
           </p>
           {showDistance && (

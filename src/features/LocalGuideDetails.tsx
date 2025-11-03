@@ -62,7 +62,11 @@ export default observer(() => {
     return (
         <>
             <LocalGuideDetailsCard localGuide={loadedLocalGuidesDetails} />
-            {loadedSimilarLocalGuides && loadedSimilarLocalGuides.length && <Marquee similarByDistance={true} typeOfMarquee={TypeOfMarquee.LocalGuide} marqueRecords={loadedSimilarLocalGuides} />}
+            {loadedSimilarLocalGuides && loadedSimilarLocalGuides.length && (
+                <div data-testid="similarlocalguidesmarquee" className="flex flex-col text-left">
+                    <Marquee similarByDistance={true} typeOfMarquee={TypeOfMarquee.LocalGuide} marqueRecords={loadedSimilarLocalGuides} />
+                </div>
+            )}
             {loadedSimilarLocalGuides && (
                 <script
                     type="application/ld+json"

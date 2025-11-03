@@ -75,7 +75,7 @@ export default observer(() => {
                 ) : null}
             </div>
             {loadedSimilarGroups && loadedSimilarGroups.length && (
-                <div className="flex flex-col text-left">
+                <div data-testid="similargroupsmarquee" className="flex flex-col text-left">
                     <h3 className="text-xl font-bold md:text-xl pl-4">Similar Groups:</h3>
                     <Marquee similarByDistance={true} typeOfMarquee={TypeOfMarquee.Group} marqueRecords={loadedSimilarGroups} />
                 </div>

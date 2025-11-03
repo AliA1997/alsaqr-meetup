@@ -12,6 +12,7 @@ interface GroupCardProps {
   howSimilar?: HowSimilarKeys;
   classNames?: string;
   showDistance?: boolean;
+  testId?: string;
 }
 
 export default observer(function GroupCard({
@@ -19,6 +20,7 @@ export default observer(function GroupCard({
   howSimilar,
   classNames,
   showDistance,
+  testId,
 }: GroupCardProps) {
   const { groupsFeedStore } = useStore();
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ export default observer(function GroupCard({
 
   return (
     <a
+      data-testid={testId ?? "groupcard"}
       href={`/groups/${group.slug}`}
       onClick={handleClick}
       className={`block transition-transform duration-200 hover:scale-[1.02] ${classNames ?? ""}`}
@@ -73,10 +76,16 @@ export default observer(function GroupCard({
 
         {/* Content */}
         <div className="p-2 pt-0">
-          <h3 className="line-clamp-2 max-w-[180px] text-sm font-medium leading-tight sm:text-base">
+          <h3 
+            data-testid="groupcardname"
+            className="line-clamp-2 max-w-[180px] text-sm font-medium leading-tight sm:text-base"
+          >
             {group.name}
           </h3>
-          <p className="text-sm text-gray-500">
+          <p 
+            data-testid="groupcardlocation"
+            className="text-sm text-gray-500"
+          >
             {group.city}, {group.country}
           </p>
           <p className="text-xs text-gray-400 mt-1 line-clamp-1">

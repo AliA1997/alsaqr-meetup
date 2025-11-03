@@ -8,7 +8,7 @@ export default function EventDetailsCard({
   event: EventRecord
 }) {
   return (
-    <div className="flex flex-col">
+    <div data-testid="eventdetailscard" className="flex flex-col">
 
       <section className="flex w-full flex-col py-4 md:flex-row">
         <Carousel images={event.images} entityName={event.name} />

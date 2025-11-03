@@ -32,7 +32,7 @@ export default function Carousel({ images, entityName }:  CarouselProps) {
   }, [emblaApi]);
 
   return (
-    <div className="flex-1 md:w-1/2 relative">
+    <div data-testid="imagescarousel" className="flex-1 md:w-1/2 relative">
       <div className="overflow-hidden rounded-lg" ref={emblaRef}>
         <div className="flex">
           {images.map((image: any, index: number) => (

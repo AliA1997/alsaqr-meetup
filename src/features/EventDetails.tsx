@@ -63,7 +63,12 @@ export default observer(() => {
     return (
         <>
             <EventDetailsCard event={loadedEventDetails} />
-            {loadedSimilarEvents && loadedSimilarEvents.length && <Marquee similarByDistance={true} typeOfMarquee={TypeOfMarquee.Event} marqueRecords={loadedSimilarEvents} />}
+            {loadedSimilarEvents && loadedSimilarEvents.length && (
+                <div data-testid="similareventsmarquee" className="flex flex-col text-left">
+                    <h3 className="text-xl font-bold md:text-xl pl-4">Similar Events:</h3>
+                    <Marquee similarByDistance={true} typeOfMarquee={TypeOfMarquee.Event} marqueRecords={loadedSimilarEvents} />
+                </div>
+            )}
             {loadedEventDetails && (
                 <script
                     type="application/ld+json"

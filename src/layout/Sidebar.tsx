@@ -75,6 +75,7 @@ const SideBar = ({ }: SideBarProps) => {
       >          
           <div className="flex justify-start">
             <img
+              data-testid="navlogo"
               className={`
                 m-0 h-full w-full md:w-[90%] transition-all duration-200 
                 sidebarLogo
