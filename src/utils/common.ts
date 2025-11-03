@@ -27,6 +27,8 @@ export const extractQryParams = (request: any, paramsToExtract: string[]): (stri
   return results;
 }
 
+axios.defaults.baseURL = `${import.meta.env.VITE_PUBLIC_BASE_API_URL}`;
+
 export const axiosResponseBody = (res: AxiosResponse) => res.data;
 
 export const axiosRequests = {

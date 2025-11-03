@@ -21,7 +21,7 @@ export default defineConfig({
     },
   },
   server: {
-    cors: false,
+    cors: true,
     proxy: {
        '/api': {
         changeOrigin: true,
