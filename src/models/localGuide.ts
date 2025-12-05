@@ -17,4 +17,5 @@ export interface LocalGuideRecord {
 
 export interface LocalGuideDetailsRecord extends LocalGuideRecord {
     userInfo: any;
+    citiesHosted: any[];
 }

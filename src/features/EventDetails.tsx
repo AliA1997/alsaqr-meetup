@@ -1,16 +1,23 @@
 import CustomPageLoader from "@common/CustomLoader";
+import { MapView } from "@common/Map";
 import EventDetailsCard from "@components/event/EventDetailsCard";
 import Marquee from "@components/shared/Marquee";
+import { EntityMarker } from "@models/common";
 import { TypeOfMarquee } from "@models/enums";
 import type { EventRecord } from "@models/event";
 import { useStore } from "@stores/index";
 import { eventsApiClient } from "@utils/eventsApiClient";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 
 
 export default observer(() => {
+    const [activeMarker, setActiveMarker] = useState<{
+        id: number;
+        latitude: number;
+        longitude: number;
+    } | undefined>(undefined);
     const { commonStore, eventsFeedStore } = useStore();
     const { userIpInfo } = commonStore;
     const { eventToViewId } = eventsFeedStore;
@@ -37,8 +44,7 @@ export default observer(() => {
         return eventDetails;
     }
 
-    async function getNearbyEventByCurrentEvent(eventDetails: EventRecord) {
-        console.log('eventDetails.citiesHosted', eventDetails.citiesHosted);
+    async function getNearbyEventByCurrentEvent() {
         const urlParams = getUrlParams();
         const { similarEvents } = await eventsApiClient.getNearbyEventByCurrentEvent(eventToViewId!, urlParams!);
 
@@ -48,14 +54,35 @@ export default observer(() => {
     useEffect(() => {
         if(slug && eventToViewId) {
             getEventDetails()
-                .then((ed) => getNearbyEventByCurrentEvent(ed));
+                .then(() => getNearbyEventByCurrentEvent());
         }
 
         return () => {
             setLoadedSimilarEvents(undefined);
             setLoadedEventDetails(undefined);
+            setActiveMarker(undefined)
         }
     }, [slug]);
+
+    const mainCoords: EntityMarker = useMemo(() => {
+        const eventCoords =  loadedEventDetails ? loadedEventDetails?.citiesHosted[loadedEventDetails?.citiesHosted.length - 1] : undefined;
+
+        if(!eventCoords?.latitude || !eventCoords?.longitude)
+            return {
+                id: loadedEventDetails?.id ?? 0,
+                latitude: userIpInfo?.latitude ?? 27.31,
+                longitude: userIpInfo?.longitude ?? 102.2,
+                name: loadedEventDetails?.name ?? "",
+            };
+        else 
+            return {
+                id: loadedEventDetails?.id ?? 0,
+                latitude: eventCoords.latitude,
+                longitude: eventCoords.longitude,
+                name: loadedEventDetails?.name ?? "",  
+            };
+
+    }, [loadedEventDetails])
 
     if(!loadedEventDetails || !loadedSimilarEvents)
         return <CustomPageLoader title="Loading" />;
@@ -63,6 +90,13 @@ export default observer(() => {
     return (
         <>
             <EventDetailsCard event={loadedEventDetails} />
+            <MapView 
+                mainCoords={mainCoords}
+                forWhat="event"
+                similarRecords={loadedSimilarEvents}
+                setActiveMarker={setActiveMarker}
+                activeMarker={activeMarker}
+            />
             {loadedSimilarEvents && loadedSimilarEvents.length && (
                 <div data-testid="similareventsmarquee" className="flex flex-col text-left">
                     <h3 className="text-xl font-bold md:text-xl pl-4">Similar Events:</h3>

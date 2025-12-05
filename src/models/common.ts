@@ -67,7 +67,7 @@ export enum ModalKeys {
 }
 
 export interface UserIpInfo {
-  countryName: string;
+  locationDisplayName: string;
   latitude: number;
   longitude: number;
 }
@@ -81,4 +81,12 @@ export interface RePostCommentParams {
     statusId: string;
     userId: string;
     reposted: boolean;
+}
+
+
+export interface EntityMarker {
+    id: number;
+    latitude: number;
+    longitude: number;
+    name: string;
 }

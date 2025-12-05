@@ -16,7 +16,7 @@ function useGetCountry({ setIpInfo, ipInfo }:  UseGetCountryParams) {
         .then(response => response.json())
         .then(data => {
           setIpInfo({
-            countryName: data.country_name,
+            locationDisplayName: data.country_name,
             latitude: data.latitude,
             longitude: data.longitude
           });

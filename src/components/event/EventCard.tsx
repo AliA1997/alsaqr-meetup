@@ -11,6 +11,7 @@ interface EventCardProps {
   event: EventRecord;
   howSimilar?: HowSimilarKeys;
   classNames?: string;
+  imageClassNames?: string;
   showDistance?: boolean;
   testId?: string;
 }
@@ -19,6 +20,7 @@ export default observer(function EventCard({
   event,
   howSimilar,
   classNames,
+  imageClassNames,
   showDistance,
   testId
 }: EventCardProps) {
@@ -70,7 +72,7 @@ export default observer(function EventCard({
           <OptimizedPostImage
             src={imageUrl}
             alt={event.name}
-            classNames="rounded-md object-cover"
+            classNames={`rounded-md object-cover ${imageClassNames ? imageClassNames : ""}`}
           />
           {howSimilar && <SimilarLabel />}
         </div>

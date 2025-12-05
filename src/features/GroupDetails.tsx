@@ -1,17 +1,24 @@
 import CustomPageLoader from "@common/CustomLoader";
+import { MapView } from "@common/Map";
 import GroupDetailsCard from "@components/group/GroupDetailsCard";
 import Marquee from "@components/shared/Marquee";
+import type { EntityMarker } from "@models/common";
 import { TypeOfMarquee } from "@models/enums";
-import { EventRecord } from "@models/event";
+import type { EventRecord } from "@models/event";
 import type { GroupRecord } from "@models/group";
 import { useStore } from "@stores/index";
 import { groupsApiClient } from "@utils/groupsApiClient";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 
 
 export default observer(() => {
+     const [activeMarker, setActiveMarker] = useState<{
+        id: number;
+        latitude: number;
+        longitude: number;
+    } | undefined>(undefined);
     const { commonStore, groupsFeedStore } = useStore();
     const { userIpInfo } = commonStore;
     const { groupToViewId } = groupsFeedStore;
@@ -60,6 +67,24 @@ export default observer(() => {
         }
     }, [slug])
 
+    const mainCoords: EntityMarker = useMemo(() => {
+        if(!loadedGroupDetails?.latitude || !loadedGroupDetails?.longitude)
+            return {
+                id: loadedGroupDetails?.id ?? 0,
+                latitude: userIpInfo?.latitude ?? 27.31,
+                longitude: userIpInfo?.longitude ?? 102.2,
+                name: loadedGroupDetails?.name ?? "",
+            };
+        else 
+            return {
+                id: loadedGroupDetails.id ?? 0,
+                latitude: loadedGroupDetails.latitude,
+                longitude: loadedGroupDetails.longitude,
+                name: loadedGroupDetails.name ?? "",  
+            };
+    }, [loadedGroupDetails])
+
+
     if(!loadedGroupDetails || !loadedSimilarGroups)
         return <CustomPageLoader title="Loading" />;
 
@@ -74,6 +99,13 @@ export default observer(() => {
                     </div>
                 ) : null}
             </div>
+            <MapView
+                mainCoords={mainCoords}
+                forWhat="group"
+                similarRecords={loadedSimilarGroups}
+                setActiveMarker={setActiveMarker}
+                activeMarker={activeMarker}
+            />
             {loadedSimilarGroups && loadedSimilarGroups.length && (
                 <div data-testid="similargroupsmarquee" className="flex flex-col text-left">
                     <h3 className="text-xl font-bold md:text-xl pl-4">Similar Groups:</h3>

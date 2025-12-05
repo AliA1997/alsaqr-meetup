@@ -1,16 +1,23 @@
 import CustomPageLoader from "@common/CustomLoader";
+import { MapView } from "@common/Map";
 import Marquee from "@components/shared/Marquee";
 import LocalGuideDetailsCard from "@components/users/LocalGuideDetailsCard";
+import { EntityMarker } from "@models/common";
 import { TypeOfMarquee } from "@models/enums";
 import type { LocalGuideDetailsRecord, LocalGuideRecord } from "@models/localGuide";
 import { useStore } from "@stores/index";
 import { userApiClient } from "@utils/userApiClient";
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 
 
 export default observer(() => {
+    const [activeMarker, setActiveMarker] = useState<{
+        id: number;
+        latitude: number;
+        longitude: number;
+    } | undefined>(undefined);
     const { commonStore, localGuidesFeedStore } = useStore();
     const { userIpInfo } = commonStore;
     const { localGuideToViewId } = localGuidesFeedStore;
@@ -43,9 +50,9 @@ export default observer(() => {
 
         setLoadedSimilarLocalGuides(similarLocalGuides);
     }
-    
+
     useEffect(() => {
-        if(slug && localGuideToViewId) {
+        if (slug && localGuideToViewId) {
             getLocalGuidesDetails()
                 .then((lgd) => getNearbyLocalGuidesByCurrentLocalGuide(lgd));
         }
@@ -56,12 +63,42 @@ export default observer(() => {
         }
     }, [slug])
 
-    if(!loadedLocalGuidesDetails)
+    const mainCoords: EntityMarker = useMemo(() => {
+        const localGuideCoords = loadedLocalGuidesDetails ? loadedLocalGuidesDetails?.citiesHosted[loadedLocalGuidesDetails?.citiesHosted.length - 1] : undefined;
+
+        if (!localGuideCoords?.latitude || !localGuideCoords?.longitude)
+            return {
+                id: loadedLocalGuidesDetails?.id ?? 0,
+                latitude: userIpInfo?.latitude ?? 27.31,
+                longitude: userIpInfo?.longitude ?? 102.2,
+                name: loadedLocalGuidesDetails?.name ?? "",
+            };
+        else
+            return {
+                id: loadedLocalGuidesDetails?.id ?? 0,
+                latitude: localGuideCoords.latitude,
+                longitude: localGuideCoords.longitude,
+                name: loadedLocalGuidesDetails?.name ?? "",
+            };
+
+    }, [loadedLocalGuidesDetails])
+
+    if (!loadedLocalGuidesDetails)
         return <CustomPageLoader title="Loading" />;
 
     return (
         <>
-            <LocalGuideDetailsCard localGuide={loadedLocalGuidesDetails} />
+            <LocalGuideDetailsCard
+                localGuide={loadedLocalGuidesDetails}
+                mainCoords={mainCoords}
+            />
+            <MapView
+                mainCoords={mainCoords}
+                forWhat="event"
+                setActiveMarker={setActiveMarker}
+                activeMarker={activeMarker}
+                onlyDisplay={true}
+            />
             {loadedSimilarLocalGuides && loadedSimilarLocalGuides.length && (
                 <div data-testid="similarlocalguidesmarquee" className="flex flex-col text-left">
                     <Marquee similarByDistance={true} typeOfMarquee={TypeOfMarquee.LocalGuide} marqueRecords={loadedSimilarLocalGuides} />
@@ -70,17 +107,19 @@ export default observer(() => {
             {loadedSimilarLocalGuides && (
                 <script
                     type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify({
-                        "@context": "https://meet.alsaqr.app/",
-                        "@type": "Local Guides",
-                        name: loadedLocalGuidesDetails.name,
-                        image: loadedLocalGuidesDetails.userInfo.avatar,
-                        description: loadedLocalGuidesDetails.userInfo.bio,
-                        brand: {
-                            "@type": "Brand",
-                            name: "AlSaqr meet",
-                        },
-                    }) }}
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://meet.alsaqr.app/",
+                            "@type": "Local Guides",
+                            name: loadedLocalGuidesDetails.name,
+                            image: loadedLocalGuidesDetails.userInfo.avatar,
+                            description: loadedLocalGuidesDetails.userInfo.bio,
+                            brand: {
+                                "@type": "Brand",
+                                name: "AlSaqr meet",
+                            },
+                        })
+                    }}
                     async
                 />
             )}

@@ -11,6 +11,7 @@ interface GroupCardProps {
   group: GroupRecord;
   howSimilar?: HowSimilarKeys;
   classNames?: string;
+  imageClassNames?: string;
   showDistance?: boolean;
   testId?: string;
 }
@@ -19,6 +20,7 @@ export default observer(function GroupCard({
   group,
   howSimilar,
   classNames,
+  imageClassNames,
   showDistance,
   testId,
 }: GroupCardProps) {
@@ -69,7 +71,7 @@ export default observer(function GroupCard({
           <OptimizedPostImage
             src={imageUrl}
             alt={group.name}
-            classNames="rounded-md object-cover"
+            classNames={`rounded-md object-cover ${imageClassNames ? imageClassNames : ''}`}
           />
           {howSimilar && <SimilarLabel />}
         </div>

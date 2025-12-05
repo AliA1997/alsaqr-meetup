@@ -59,7 +59,7 @@ export default class CommonStore {
     if(!store.authStore.auth.getUserIpInfo()) {
       const ipData = await agent.locationApiClient.getIpAddress();
       const newUserIpInfo = {
-        countryName: ipData.country_name,
+        locationDisplayName: `${ipData.city}, ${ipData.country_name}`,
         latitude: ipData.latitude,
         longitude: ipData.longitude
       };
