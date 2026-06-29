@@ -71,6 +71,7 @@ export default class MyEventsFeedStore {
     loadMyEvents = async () => {
 
         this.setLoadingInitial(true);
+        this.myEventRegistry.clear();
         try {
             const { items, pagination } = await agent.eventsApiClient.getMyEvents(this.axiosParams);
 

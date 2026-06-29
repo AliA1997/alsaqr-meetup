@@ -180,21 +180,25 @@ export enum  RelationshipType {
 };
 
 export interface NotificationRecord extends CommonRecordBody {
-  id: string;
-  message: string;
-  read: boolean;
-  relatedEntityId?: string;
+  notificationId: string;
+  userId: string;
+  notificationMessage: string;
+  notificationType: string;
+  isRead: boolean;
   link?: string;
-  createdAt: string;
-  updatedAt: string;
-  _rev: string;
-  _type: "notification";
-  notificationType: NotificationType;
+  relatedUserId?: string;
+  postId?: string;
+  communityId?: string;
+  communityDiscussionId?: string;
+  communityDiscussionMessageId?: string;
+  listId?: string;
+  listItemId?: string;
+  notificationCreatedAt: string;
+  notificationUpdatedAt: string;
 }
 
-export interface NotificationToDisplay {
-  notification: NotificationRecord,
-}
+
+export interface NotificationToDisplay extends NotificationRecord {}
 
 export interface ServerError {
   statusCode: number;
@@ -202,17 +206,15 @@ export interface ServerError {
   details: string;
 }
 
-// Direct Message Relationships
-// Sender -> SEND_MESSAGE -> Recipient
-// Recipient -> RECEIVED_MESSAGE -> Sender
-export interface MessageFormDto extends CommonRecordBody {
-  messageType: MessageType;
+export interface MessageFormDto {
   senderId: string;
   senderProfileImg?: string;
   senderUsername?: string;
   recipientId?: string;
   recipientProfileImg?: string;
   recipientUsername?: string;
+  text: string;
+  image?: string;
 }
 
 export interface MessageRecord extends CommonRecordBody {
@@ -230,9 +232,23 @@ export interface MessageRecord extends CommonRecordBody {
   recipientUsername?: string;
 }
 
-export interface MessageToDisplay {
-  message: MessageRecord,
+export interface MessageRecord extends CommonRecordBody {
+  messageId: string;
+  senderId?: string;
+  senderUsername?: string;
+  senderAvatar?: string;
+  recipientId?: string;
+  recipientAvatar?: string;
+  recipientUsername?: string;
+  messageContent?: string;
+  messageMedia?; string;
+  isRead?: boolean;
+
+  messageCreatedAt: Date;
+  messageUpdatedAt: Date;
 }
+
+export interface MessageToDisplay extends MessageRecord {}
 
 export interface MessageHistoryToDisplay {
   id: string;

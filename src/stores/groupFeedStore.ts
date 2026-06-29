@@ -1,7 +1,7 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
 import agent from "@utils/common";
-import { GroupRecord } from "@models/group";
+import { GroupRecord, UpsertGroupRequest } from "@models/group";
 import { store } from ".";
 
 export default class GroupsFeedStore {
@@ -17,6 +17,10 @@ export default class GroupsFeedStore {
 
 
     loadingInitial = false;
+    loadingUpsert = false;
+    setLoadingUpsert = (value: boolean) => {
+        this.loadingUpsert = value;
+    }
     predicate = new Map();
     setPredicate = (predicate: string, value: string | number | Date | undefined) => {
         if(value) {
@@ -59,8 +63,9 @@ export default class GroupsFeedStore {
         const params = new URLSearchParams();
         params.append("currentPage", this.pagingParams.currentPage.toString());
         params.append("itemsPerPage", this.pagingParams.itemsPerPage.toString());
-        params.append("latitude", store.commonStore.userIpInfo?.latitude?.toString() ?? "27.7671");
-        params.append("longitude", store.commonStore.userIpInfo?.longitude?.toString() ?? "82.6384");
+        params.append("latitude", `${store.commonStore.userIpInfo?.latitude?.toString() ?? "27.7671"}`);
+        params.append("longitude", `${store.commonStore.userIpInfo?.longitude?.toString() ?? "82.6384"}`);
+        params.append("maxDistanceKm", "2500.0");
 
         this.predicate.forEach((value, key) => params.append(key, value));
 
@@ -71,6 +76,7 @@ export default class GroupsFeedStore {
 
         this.setLoadingInitial(true);
         try {
+            debugger;
             const { items, pagination } = await agent.groupsApiClient.getNearbyGroups(this.axiosParams);
 
             runInAction(() => {
@@ -90,5 +96,34 @@ export default class GroupsFeedStore {
 
     get nearbyGroups() {
         return Array.from(this.groupRegistry.values());
+    }
+
+    createGroup = async (values: UpsertGroupRequest) => {
+        this.setLoadingUpsert(true);
+        try {
+            await agent.groupsApiClient.createGroup(values);
+        } finally {
+            this.setLoadingUpsert(false);
+        }
+    }
+
+    updateGroup = async (groupId: number, values: UpsertGroupRequest) => {
+        this.setLoadingUpsert(true);
+        try {
+            await agent.groupsApiClient.updateGroup(groupId, values);
+            await store.myGroupsFeedStore.loadMyGroups();
+        } finally {
+            this.setLoadingUpsert(false);
+        }
+    }
+
+    deleteGroup = async (groupId: number) => {
+        this.setLoadingUpsert(true);
+        try {
+            await agent.groupsApiClient.deleteGroup(groupId);
+            runInAction(() => store.myGroupsFeedStore.myGroupRegistry.delete(groupId));
+        } finally {
+            this.setLoadingUpsert(false);
+        }
     }
 }

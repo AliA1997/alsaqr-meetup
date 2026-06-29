@@ -5,18 +5,15 @@ import { axiosResponseBody } from "./common";
 
 export const messageApiClient = {
     loadDirectMessages: (
-        userId: string,
-        params: URLSearchParams, 
+        params: URLSearchParams,
     ) =>
-        axios.get(`/api/messages/${userId}`, { params }).then(axiosResponseBody),
+        axios.get(`/api/users/messages`, { params }).then(axiosResponseBody),
     sendDirectMessage: (
-        values: MessageFormDto, 
-        userId: string
+        values: MessageFormDto
     ) =>
-        axios.post(`/api/messages/${userId}/sendMessage`, { values }).then(axiosResponseBody),
-    loadDirectMessageHistory: (
-        userId: string,
-        params: URLSearchParams, 
+        axios.post(`/api/messages/sendMessage`, { values }).then(axiosResponseBody),
+    loadDirectMessageThreads: (
+        params: URLSearchParams,
     ) =>
-        axios.get(`/api/users/${userId}/messages`, { params }).then(axiosResponseBody),
+        axios.get(`/api/users/messageThreads`, { params }).then(axiosResponseBody),
 };

@@ -68,7 +68,7 @@ const SideBar = ({ }: SideBarProps) => {
     <>
       <div className={`
           ${hideSidebar ? 'col-span-2' : 'col-span-1 md:col-span-2'}
-          flex flex-col item-center mt-2 md:mt-0 md:px-4 md:items-start
+          flex flex-col items-center mt-2 md:mt-0 md:px-4 md:items-start
           overflow-y-auto scrollbar-hide
           max-h-[90vh] lg:max-h-[90vh]
         `}
@@ -280,11 +280,11 @@ const SideBar = ({ }: SideBarProps) => {
                   {currentSessionUser && currentSessionUser.id && (
                     <>
                       <hr />
-                      {/* <div className="flex align-center p-2 cursor-pointer hover:opacity-75"> */}
+                      
                       <div
                         onClick={() =>{
                           setActiveTab(undefined);
-                          window.open(`${import.meta.env.VITE_PUBLIC_ALSAQR_URL}/users/${currentSessionUser?.username}`);
+                          navigate("/admin");
                         }}
                         className={`
                             group flex max-w-fit

@@ -8,7 +8,9 @@ import { useStore } from "@stores/index";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { MessageFormDto, MessageHistoryToDisplay, MessageType } from "@typings";
+import { MessageFormDto, MessageHistoryToDisplay } from "@typings";
+import { checkNsfwInImage, initializeClient } from "@utils/infrastructure/gradio";
+import { NOT_ALLOWED_NSFW_CHECKER_RESULTS } from "@utils/constants";
 
 
 export default observer(function Messages() {
@@ -31,9 +33,12 @@ export default observer(function Messages() {
     const [input, setInput] = useState<string>('');
     const [image, setImage] = useState<string>('');
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [nsfwAlert, setNsfwAlert] = useState('');
+    const [processNsfwCheck, setProcessNsfwCheck] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
-    async function loadDirectMessageHistoryItems(userId: string) {
-        await loadDirectMessageHistory(userId)
+    async function loadDirectMessageHistoryItems() {
+        await loadDirectMessageHistory()
         isMounted.current = true;
     }
 
@@ -44,12 +49,39 @@ export default observer(function Messages() {
 
     useEffect(() => {
         if (currentSessionUser && currentSessionUser.id)
-            loadDirectMessageHistoryItems(currentSessionUser.id);
+            loadDirectMessageHistoryItems();
 
         return () => {
             isMounted.current = false;
         };
     }, [currentSessionUser]);
+
+    useEffect(() => {
+        if (processNsfwCheck) {
+            initializeClient()
+                .then((gradioClient) => checkNsfwInImage(gradioClient, image))
+                .then((resolvedNsfwStatus: string) => {
+
+                    if (resolvedNsfwStatus === NOT_ALLOWED_NSFW_CHECKER_RESULTS['Somewhat Explicit'] || resolvedNsfwStatus === NOT_ALLOWED_NSFW_CHECKER_RESULTS['Very Explicit']) {
+                        setNsfwAlert(`Please choose a different photo â€” explicit images arenâ€™t allowed in messages.`);
+                        setImage('');
+                        setHasError(true);
+                    }
+                    else {
+                        setHasError(false);
+                    }
+                })
+                .catch(err => {
+                    console.log("Error:", err);
+                    setHasError(true);
+                })
+                .finally(() => {
+                    setProcessNsfwCheck(false);
+                });
+        }
+
+        return () => { }
+    }, [processNsfwCheck]);
 
 
     const handleSendMessage = async (e: React.FormEvent) => {
@@ -65,19 +97,18 @@ export default observer(function Messages() {
             recipientUsername: selectedDirectMessageHistoryItem?.receiverUsername,
             recipientProfileImg: selectedDirectMessageHistoryItem?.receiverProfileImage,
             image: image,
-            text: input,
-            messageType: MessageType.Direct
+            text: input
         };
 
         try {
 
-            await sendDirectMessage(messageForm, currentSessionUser?.id!);
+            await sendDirectMessage(messageForm);
 
             setInput('');
             setImage('');
 
             toast("Message Posted!", {
-                icon: "🚀",
+                icon: "ðŸš€",
             });
 
             await loadDirectMessages(messageForm.senderId, messageForm.recipientId!);
@@ -88,9 +119,9 @@ export default observer(function Messages() {
     };
 
     return (
-        <div className="flex h-screen bg-white dark:bg-black text-gray-900 dark:text-gray-100">
+        <div className="flex h-screen max-h-screen overflow-hidden bg-white dark:bg-black text-gray-900 dark:text-gray-100">
             {/* Left Sidebar - Message List */}
-            <div className="hidden md:flex w-auto border-r border-gray-200 dark:border-gray-800 flex-col">
+            <div className="hidden md:flex w-72 lg:w-80 shrink-0 border-r border-gray-200 dark:border-gray-800 flex-col min-h-0">
                 <div className="p-4 border-b border-gray-200 dark:border-gray-800">
                     <div className="flex items-center justify-between">
                         <h1 className="text-xl font-bold">Messages</h1>
@@ -136,14 +167,14 @@ export default observer(function Messages() {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col min-h-0 min-w-0">
                 {/* Mobile Header */}
                 <div className="md:hidden flex items-center p-4 border-b border-gray-200 dark:border-gray-800">
                     <h2 className="text-xl font-bold">Messages</h2>
                 </div>
                 {/* Conversation View (commented out for now) */}
 
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col min-h-0">
                     <MessageHeader
                         sessionUser={currentSessionUser}
                         userToMessageId={selectedDirectMessageHistoryItem?.receiverId ?? ''}
@@ -163,11 +194,20 @@ export default observer(function Messages() {
                     <MessageInput
                         onSubmit={handleSendMessage}
                         image={image}
-                        setImage={setImage}
+                        setImage={(val: string) => {
+                            if(val){
+                                setProcessNsfwCheck(true);
+                            }
+                            setImage(val);
+                        }}
                         input={input}
                         setInput={setInput}
                         loading={loadingUpsert}
                         submitting={submitting}
+                        processNsfwCheck={processNsfwCheck}
+                        nsfwAlert={nsfwAlert}
+                        setNsfwAlert={setNsfwAlert}
+                        hasError={hasError}
                     />
                 </div>
 

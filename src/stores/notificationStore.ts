@@ -72,7 +72,7 @@ export default class NotificationStore {
 
             runInAction(() => {
                 items.forEach((not: NotificationToDisplay) => {
-                    this.setNotification(not.notification.id, not);
+                    this.setNotification(not.notificationId, not);
                 });
 
             });

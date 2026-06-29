@@ -1,4 +1,4 @@
-import CustomPageLoader from "@common/CustomLoader";
+import { SkeletonLoader } from "@common/CustomLoader";
 import { MapView } from "@common/Map";
 import Marquee from "@components/shared/Marquee";
 import LocalGuideDetailsCard from "@components/users/LocalGuideDetailsCard";
@@ -84,7 +84,7 @@ export default observer(() => {
     }, [loadedLocalGuidesDetails])
 
     if (!loadedLocalGuidesDetails)
-        return <CustomPageLoader title="Loading" />;
+        return <SkeletonLoader count={6} />;
 
     return (
         <>

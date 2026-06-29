@@ -10,7 +10,7 @@ type Props = {
     onGoBack: () => void;
 };
 
-function MessageHeader({ 
+function MessageHeader({
     sessionUser,
     userToMessageId,
     userToMessageUsername,
@@ -21,13 +21,13 @@ function MessageHeader({
         <div className="border-b border-gray-200 dark:border-gray-800 p-4 flex items-center">
             {userToMessageId && sessionUser ? (
               <>
-              <GoBackButton 
+              <GoBackButton
                 onClick={onGoBack}
               />
               <div className="flex space-x-2">
                   {[
                     sessionUser,
-                    { 
+                    {
                       id: userToMessageId,
                       username: userToMessageUsername,
                       avatar: userToMessageAvatar

@@ -99,7 +99,7 @@ export default observer(function EventCard({
           </p>
           {showDistance && (
             <p className="text-xs text-gray-400 mt-1">
-              {event.distanceKm.toFixed(1)} km away
+              {(event.distanceKm ?? 0).toFixed(1)} km away
             </p>
           )}
         </div>

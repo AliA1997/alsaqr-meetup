@@ -52,6 +52,7 @@ export default observer(function LocalGuideCard({
   };
 
 
+
   return (
     <a
       data-testid={testId ?? "localguidecard"}
@@ -63,12 +64,12 @@ export default observer(function LocalGuideCard({
         {/* Header */}
         <div className="relative flex items-center justify-center p-1">
           <OptimizedPostImage
-            src={""}
+            src={localGuide.avatar}
             alt={localGuide.name}
             classNames="rounded-md object-cover"
           />
           {howSimilar && <SimilarLabel />}
-        </div>
+      </div>
 
         {/* Content */}
         <div className="p-2 pt-0">

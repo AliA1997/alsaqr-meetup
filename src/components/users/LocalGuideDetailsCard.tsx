@@ -14,7 +14,7 @@ export default function LocalGuideDetailsCard({
   mainCoords
 }: LocalGuideDetailsCardProps) {
   const userInfo = useMemo(() => localGuide.userInfo, [localGuide]);
-  
+
   return (
     <div data-testid="localguidedetailscard" className="flex flex-col">
       <section className="flex w-full flex-col py-4">
@@ -47,15 +47,14 @@ export default function LocalGuideDetailsCard({
 
           {userInfo.bio && (
             <div className="space-y-2">
-              <h2 className="text-xl font-semibold text-gray-700">About</h2>
+              <h2 className="text-xl font-semibold text-gray-700">About:</h2>
               <p className="text-gray-600 leading-relaxed">{userInfo.bio}</p>
             </div>
           )}
-
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold text-gray-700">Location</h2>
+            <h2 className="text-xl font-semibold text-gray-700">Cities Hosted:</h2>
             {(localGuide.citiesHosted ?? []).map((hc: any, hcIdx: number) => (
-              <p key={hcIdx} className="text-gray-600">{hc.city}, {hc.country}</p>
+              <p key={hcIdx} className="text-gray-600">{hc.name}, {hc.stateOrProvince}, {hc.country}</p>
             ))}
           </div>
 

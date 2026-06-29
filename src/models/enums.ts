@@ -31,7 +31,8 @@ export enum TypeOfFeeds {
   NearbyEvents = 2,
   NearbyOnlineEvents = 3,
   MyGroups = 4,
-  MyEvents = 5
+  MyEvents = 5,
+  LocalGuides = 6
 }
 
 export enum TypeOfMarquee {

@@ -6,7 +6,10 @@ export const ROUTES_USER_CANT_ACCESS = [
   '/bookmarks',
   '/lists',
   '/messages',
-  '/notifications'
+  '/notifications',
+  '/my-groups',
+  '/my-events',
+  '/admin'
 ];
 
 export const ROUTES_WIDGETS_HIDDEN = [
@@ -72,4 +75,9 @@ export const HOW_SIMILAR_LABEL_MAP = {
   [HowSimilarKeys.SomewhatFar]: { text: "Ok Match", color: "warning" },
   [HowSimilarKeys.Nearby]: { text: "Good Match", color: "info" },
   [HowSimilarKeys.WalkingDistance]: { text: "Good Match", color: "success" }
+};
+
+export const NOT_ALLOWED_NSFW_CHECKER_RESULTS = {
+  "Somewhat Explicit": 'Somewhat Explicit',
+  'Very Explicit': 'Very Explicit'
 };

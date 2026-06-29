@@ -1,5 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { PaginatedResult } from '../models/common';
+import Auth from './auth';
 import { notificationApiClient } from "./notificationApiClient";
 import { userApiClient } from "./userApiClient";
 import { messageApiClient } from "./messageApiClient";
@@ -7,6 +8,8 @@ import { commentApiClient } from "./commentApiClient";
 import { locationApiClient } from './locationApiClient';
 import { groupsApiClient } from './groupsApiClient';
 import { eventsApiClient } from './eventsApiClient';
+import { citiesApiClient } from './citiesApiClient';
+import { store } from '@stores/index';
 
 export const extractQryParams = (request: any, paramsToExtract: string[]): (string | null)[] => {
   const qryParams = new URL(request.url!).searchParams;
@@ -28,6 +31,21 @@ export const extractQryParams = (request: any, paramsToExtract: string[]): (stri
 }
 
 axios.defaults.baseURL = `${import.meta.env.VITE_PUBLIC_BASE_API_URL}`;
+
+// Centralized auth: attach the logged-in user's bearer token to every outgoing
+// request. This is the single place the Authorization header is set — call sites
+// must never set it by hand. When no token exists the header is omitted so public
+// endpoints keep working. The token is read live on each request, so a refreshed
+// cookie is picked up automatically.
+const auth = new Auth();
+axios.interceptors.request.use((config) => {
+  const token = auth.getToken();
+  if (token) {
+    config.headers = config.headers ?? {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const axiosResponseBody = (res: AxiosResponse) => res.data;
 
@@ -81,12 +99,10 @@ axios.interceptors.response.use(
         }
         break;
       case 401:
+        //If they return an unauthorized status code, and message includes something about access token, logs user account.
+        if(myResponse.data.toLowerCase().includes("access token"))
+          store.authStore.resetAuthState();
 
-        if (myResponse.data === "invalid_token") {
-          console.log("Invalid Token");
-        } else {
-          console.log("Authorization Error");
-        }
         break;
       case 403:
         console.log("Oops their is a problem");
@@ -108,6 +124,7 @@ axios.interceptors.response.use(
 
 
 const agent = {
+  citiesApiClient,
   commentApiClient,
   groupsApiClient,
   eventsApiClient,

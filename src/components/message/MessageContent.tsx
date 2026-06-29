@@ -1,4 +1,4 @@
-import CustomPageLoader from "@common/CustomLoader";
+import { SkeletonLoader } from "@common/CustomLoader";
 import { MessageToDisplay } from "typings";
 import MessageItem from "./MessageItem";
 import { NoRecordsTitle } from "@common/Titles";
@@ -11,7 +11,7 @@ type Props = {
     noRecordsText: string;
 };
 
-function MessageContent({ 
+function MessageContent({
     loggedInUserId,
     loading,
     showMessages,
@@ -19,13 +19,13 @@ function MessageContent({
     noRecordsText
  }: Props) {
     return (
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="flex-1 min-h-0 p-4 overflow-y-auto">
             {loading ? (
-                <CustomPageLoader title="Loading" /> 
+                <SkeletonLoader count={8} />
             ) : showMessages && loggedInUserId
                 ? messages.map((dirMessage, idx) => (
-                    <MessageItem 
-                        key={dirMessage.message.id ?? idx}
+                    <MessageItem
+                        key={dirMessage.messageId ?? idx}
                         loggedInUserId={loggedInUserId}
                         messageToDisplay={dirMessage}
                     />

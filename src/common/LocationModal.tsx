@@ -9,7 +9,7 @@ import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/solid";
 
 export const LocationModal = observer(() => {
     const { commonStore, modalStore } = useStore();
-    const { userIpInfo, setUserIpInfo } = commonStore;
+    const { setUserIpInfo, userIpInfo } = commonStore;
     const { closeModal } = modalStore;
     const [activeMarker, setActiveMarker] = useState<{ latitude: number, longitude: number }>({ latitude: userIpInfo?.latitude ?? 31.5, longitude: userIpInfo?.longitude ?? 39.39 })
     const [locationToDisplay, setLocationToDisplay] = useState<{ cityCountry: string, latitude: number, longitude: number, displayName: string } | undefined>();
@@ -65,7 +65,7 @@ export const LocationModal = observer(() => {
                         <button
                             onClick={onClose}
                             style={{ background: 'transparent' }}
-                            className="absolute right-5 top-0 text-gray-400 hover:text-gray-600 block float-right"
+                            className="absolute right-5 top-3 text-gray-400 hover:text-gray-600 block float-right"
                         >
                             <svg
                                 className="w-6 h-6"
@@ -87,7 +87,7 @@ export const LocationModal = observer(() => {
                 onClose={onClose}
                 style={{ background: 'transparent' }}
             >
-                <div className='flex flex-col justify-center' data-testid="loginmodal">
+                <div className='flex flex-col justify-center' data-testid="locationmodal">
                     <DraggableMap
                         activeMarker={activeMarker}
                         setActiveMarker={setActiveMarker}

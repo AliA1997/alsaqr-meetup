@@ -1,5 +1,6 @@
 import axios from "axios";
 import { axiosRequests, axiosResponseBody } from "./common";
+import { UpsertLocalGuideRequest } from "@models/localGuide";
 
 export const userApiClient = {
     sessionSignin: (email: string) => 
@@ -25,4 +26,8 @@ export const userApiClient = {
     getUserProfilePosts: (username: string, params: URLSearchParams) =>
         axios.get(`/api/profile/${username}/posts`, { params }).then(axiosResponseBody),
 
-} 
+    createLocalGuide: (values: UpsertLocalGuideRequest) =>
+        axios.post(`/api/LocalGuides`, values).then(axiosResponseBody),
+    updateLocalGuide: (localGuideId: number, values: UpsertLocalGuideRequest) =>
+        axios.put(`/api/LocalGuides/${localGuideId}`, values).then(axiosResponseBody),
+}

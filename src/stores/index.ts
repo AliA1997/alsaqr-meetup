@@ -1,7 +1,6 @@
 import { useContext, createContext } from 'react';
 import CommonStore from './commonStore';
 import ModalStore from './modalStore';
-import AuthStore from './authStore';
 import NotificationStore from './notificationStore';
 import UserStore from './userStore';
 import MessageStore from './messageStore';
@@ -14,6 +13,7 @@ import MyGroupsFeedStore from './myGroupsFeedStore';
 import OnlineEventsFeedStore from './onlineEventsFeedStore';
 import MyEventsFeedStore from './myEventsFeedStore';
 import LocalGuidesFeedStore from './localGuidesFeedStore';
+import AuthStore from './authStore';
 
 interface Store {
     authStore: AuthStore;

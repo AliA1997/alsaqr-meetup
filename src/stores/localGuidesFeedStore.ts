@@ -2,7 +2,7 @@ import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
 import agent from "@utils/common";
 import { store } from ".";
-import { LocalGuideRecord } from "@models/localGuide";
+import { LocalGuideRecord, UpsertLocalGuideRequest } from "@models/localGuide";
 
 export default class LocalGuidesFeedStore {
 
@@ -17,6 +17,15 @@ export default class LocalGuidesFeedStore {
 
 
     loadingInitial = false;
+    loadingUpsert = false;
+    setLoadingUpsert = (value: boolean) => {
+        this.loadingUpsert = value;
+    }
+    // The logged-in user's own local-guide profile (if any). Drives "create vs edit".
+    myLocalGuide: LocalGuideRecord | undefined = undefined;
+    setMyLocalGuide = (value: LocalGuideRecord | undefined) => {
+        this.myLocalGuide = value;
+    }
     predicate = new Map();
     setPredicate = (predicate: string, value: string | number | Date | undefined) => {
         if(value) {
@@ -59,17 +68,19 @@ export default class LocalGuidesFeedStore {
         const params = new URLSearchParams();
         params.append("currentPage", this.pagingParams.currentPage.toString());
         params.append("itemsPerPage", this.pagingParams.itemsPerPage.toString());
-        params.append("latitude", store.commonStore.userIpInfo?.latitude?.toString() ?? "27.7671");
-        params.append("longitude", store.commonStore.userIpInfo?.longitude?.toString() ?? "82.6384");
-
+        params.append("latitude", `${store.commonStore.userIpInfo?.latitude?.toString() ?? "27.7671"}`);
+        params.append("longitude", `${store.commonStore.userIpInfo?.longitude?.toString() ?? "82.6384"}`);
+        params.append("maxDistanceKm", "500.0");
+        
         this.predicate.forEach((value, key) => params.append(key, value));
 
         return params;
     }
 
     loadLocalGuides = async () => {
-
+        
         this.setLoadingInitial(true);
+        this.localGuidesRegistry.clear();
         try {
             const { items, pagination } = await agent.userApiClient.getLocalGuides(this.axiosParams);
 
@@ -90,5 +101,23 @@ export default class LocalGuidesFeedStore {
 
     get nearbyLocalGuides() {
         return Array.from(this.localGuidesRegistry.values());
+    }
+
+
+    // One profile per user: update when one already exists, otherwise create.
+    upsertLocalGuide = async (values: UpsertLocalGuideRequest) => {
+        this.setLoadingUpsert(true);
+        try {
+            const saved: LocalGuideRecord = values.id
+                ? await agent.userApiClient.updateLocalGuide(values.id, values)
+                : await agent.userApiClient.createLocalGuide(values);
+            runInAction(() => {
+                this.setMyLocalGuide(saved);
+                this.setLocalGuide(saved.id, saved);
+            });
+            return saved;
+        } finally {
+            this.setLoadingUpsert(false);
+        }
     }
 }

@@ -1,6 +1,5 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { convertQueryStringToObject } from "@utils/index";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { PagingParams } from "@models/common";
@@ -8,9 +7,9 @@ import { leadingDebounce } from "@utils/common";
 import { ContentContainerWithRef } from "@common/Containers";
 import { NoRecordsTitle } from "@common/Titles";
 
-import CustomPageLoader from "@common/CustomLoader";
 import { LocalGuideRecord } from "@models/localGuide";
 import LocalGuideCard from "./LocalGuideCard";
+import { SkeletonLoader } from "@common/CustomLoader";
 
 
 const LocalGuidesFeed = observer(() => {
@@ -23,8 +22,6 @@ const LocalGuidesFeed = observer(() => {
         setPagingParams,
         pagingParams,
         loadLocalGuides,
-        predicate,
-        setPredicate,
         nearbyLocalGuides
     } = localGuidesFeedStore;
     const [loading, setLoading] = useState<boolean>(false);
@@ -41,19 +38,6 @@ const LocalGuidesFeed = observer(() => {
 
             setLoading(true);
             try {
-                const paramsFromQryString = convertQueryStringToObject(
-                    window.location.search
-                );
-
-                if (
-                    (paramsFromQryString.currentPage && paramsFromQryString.itemsPerPage)
-                    && (paramsFromQryString.currentPage !== predicate.get('currentPage')
-                        || paramsFromQryString.itemsPerPage !== predicate.get('itemsPerPage')
-                        || paramsFromQryString.searchTerm != predicate.get('searchTerm'))) {
-
-                    setPagingParams(new PagingParams(paramsFromQryString.currentPage, paramsFromQryString.itemsPerPage));
-                    setPredicate('searchTerm', paramsFromQryString.searchTerm);
-                }
 
                 await loadRecords();
             } finally {
@@ -69,7 +53,6 @@ const LocalGuidesFeed = observer(() => {
 
 
     useEffect(() => {
-
         getLocalGuides();
     }, []);
 
@@ -123,7 +106,7 @@ const LocalGuidesFeed = observer(() => {
     }, []);
 
     if (loading)
-        return <CustomPageLoader title="Loading" />;
+        return <SkeletonLoader count={6} />;
 
     return (
         <ContentContainerWithRef
@@ -133,8 +116,8 @@ const LocalGuidesFeed = observer(() => {
             innerRef={containerRef}
         >
             <div className={`
-                scrollbar-hide max-h-screen overflow-scroll 
-                dark:border-gray-800 grid w-full max-w-7xl grid-cols-2 
+                scrollbar-hide max-h-screen overflow-scroll
+                dark:border-gray-800 grid w-full max-w-7xl grid-cols-2
                 gap-4 sm:grid-cols-3 md:grid-cols-4
             `}>
                 {loadedRecords && loadedRecords.length

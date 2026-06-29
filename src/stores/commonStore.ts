@@ -1,7 +1,9 @@
-import { makeAutoObservable, reaction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 import Auth from "../utils/auth";
 import { ServerError } from "typings";
 import { UserIpInfo } from "@models/common";
+import { City } from "@models/city";
+import { Topic } from "@models/topic";
 import agent from "@utils/common";
 import { store } from ".";
 
@@ -13,6 +15,16 @@ export default class CommonStore {
 
   alertMessage: string[] = [];
   alertsDisplayed: boolean = false;
+
+  // Selectable cities for the create/update form dropdowns. Loaded once and shared by the
+  // event, group, and local-guide forms.
+  citiesRegistry = new Map<string, City>();
+  loadingCities = false;
+
+  // Selectable topics for the group form's topic autocomplete. Loaded once and shared
+  // across forms (see loadTopics).
+  topics: Topic[] = [];
+  loadingTopics = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -44,6 +56,59 @@ export default class CommonStore {
 
   setUserIpInfo = (data: UserIpInfo | undefined) => {
     this.userIpInfo = data;
+  }
+
+  setCities = (cityId: string, city: City) => {
+    if(!this.citiesRegistry.has(cityId))
+      this.citiesRegistry.set(cityId, city);
+  }
+
+  setTopics = (topics: Topic[]) => {
+    this.topics = topics;
+  }
+
+  // Loads the cities dropdown source once; subsequent callers reuse the cached list.
+  loadCities = async () => {
+    if (this.citiesRegistry.size > 0 || this.loadingCities) 
+      return;
+    
+    this.loadingCities = true;
+    try {
+      const cities = await agent.citiesApiClient.getCities();
+      runInAction(() => {
+          cities.forEach((city: City) => {
+              this.setCities(city.id, city);
+          });
+
+      });
+    } finally {
+      runInAction(() => (this.loadingCities = false));
+    }
+  }
+
+
+  searchCities = async (query: string): Promise<City[]> => {
+    var urlParams = new URLSearchParams();
+    urlParams.append("searchTerm", query);
+
+    const results: City[] = await agent.citiesApiClient.searchCities(urlParams);
+    runInAction(() => {
+      (results ?? []).forEach((c) => this.setCities(c.id, c));
+    });
+    return results ?? [];
+  }
+
+  // Loads the topic autocomplete source once; subsequent callers (each form mount,
+  // each keystroke) reuse the cached list so we never re-hit `GET /api/Topics`.
+  loadTopics = async () => {
+    if (this.topics.length > 0 || this.loadingTopics) return;
+    this.loadingTopics = true;
+    try {
+      const topics = await agent.groupsApiClient.getTopics();
+      runInAction(() => this.setTopics(topics ?? []));
+    } finally {
+      runInAction(() => (this.loadingTopics = false));
+    }
   }
 
   addAlertMessage = (alert: string) => {
@@ -88,5 +153,9 @@ export default class CommonStore {
     }
 
     if (isScriptExist && callback) callback();
-  };
+  }
+
+  get cities() {
+    return Array.from(this.citiesRegistry.values());
+  }
 }

@@ -1,12 +1,18 @@
 import Carousel from "@components/shared/Carousel";
 import { EventRecord } from "@models/event";
+import EventOwnerActions from "./EventOwnerActions";
 
+
+interface EventDetailsCardProps {
+  event: EventRecord;
+  // Refetches the event on this page after the founder edits it.
+  onRefresh?: () => void;
+}
 
 export default function EventDetailsCard({
-  event
-}: {
-  event: EventRecord
-}) {
+  event,
+  onRefresh
+}: EventDetailsCardProps) {
   return (
     <div data-testid="eventdetailscard" className="flex flex-col">
 
@@ -15,6 +21,7 @@ export default function EventDetailsCard({
 
         <div className="flex w-full flex-col space-y-4 px-0 py-2 md:w-1/2 md:px-4 lg:px-12">
           <p className="p-2 text-[2rem] font-bold md:text-[2.5rem]">{event.name}</p>
+          <EventOwnerActions event={event} onUpdated={onRefresh} />
 
         </div>
       </section>

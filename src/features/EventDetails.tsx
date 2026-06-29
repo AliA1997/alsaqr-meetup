@@ -1,4 +1,4 @@
-import CustomPageLoader from "@common/CustomLoader";
+import { SkeletonLoader } from "@common/CustomLoader";
 import { MapView } from "@common/Map";
 import EventDetailsCard from "@components/event/EventDetailsCard";
 import Marquee from "@components/shared/Marquee";
@@ -85,11 +85,11 @@ export default observer(() => {
     }, [loadedEventDetails])
 
     if(!loadedEventDetails || !loadedSimilarEvents)
-        return <CustomPageLoader title="Loading" />;
+        return <SkeletonLoader count={6} />;
 
     return (
         <>
-            <EventDetailsCard event={loadedEventDetails} />
+            <EventDetailsCard event={loadedEventDetails} onRefresh={getEventDetails} />
             <MapView 
                 mainCoords={mainCoords}
                 forWhat="event"

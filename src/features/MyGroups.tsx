@@ -1,8 +1,12 @@
 import Feed from "@components/shared/Feed";
 import { TypeOfFeeds } from "@models/enums";
+import AdminDashboardLink from "@common/AdminDashboardLink";
 
 export default function MyGroups() {
     return (
-        <Feed typeOfFeed={TypeOfFeeds.MyGroups} />
+        <div className="flex w-full flex-col">
+            <AdminDashboardLink />
+            <Feed typeOfFeed={TypeOfFeeds.MyGroups} />
+        </div>
     );
 }

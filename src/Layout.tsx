@@ -1,16 +1,38 @@
 import { motion } from 'framer-motion';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import PageContainer from './layout/PageContainer';
 import LoadingSpinner from './layout/LoadingSpinner';
 import { observer } from 'mobx-react-lite';
 import { useStore } from './stores';
 import { useCheckSession } from '@hooks/useCheckSession';
+import { SuspenseLoader } from '@common/CustomLoader';
 
 export default observer(function ({ children }: React.PropsWithChildren<any>) {
     const { authStore } = useStore();
     const { auth, setCurrentSessionUser } = authStore;
     useCheckSession(setCurrentSessionUser, auth?.getUser())
+
+    const [mounted, setMounted] = useState<boolean>(false);
+
+    useEffect(
+        () => {
+            let timeout = null;
+            timeout = setTimeout(() => setMounted(true), 500);
+
+            return () => {
+                clearTimeout(timeout);
+            }
+        },
+        []
+    )
+
+     if(!mounted)
+        return <SuspenseLoader />;
+
     return (
+        <Suspense
+            fallback={<SuspenseLoader />}
+        >
             <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -62,5 +84,6 @@ export default observer(function ({ children }: React.PropsWithChildren<any>) {
                     </div>
                 </footer>
             </motion.div>
+        </Suspense>
     );
 });

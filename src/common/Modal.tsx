@@ -16,8 +16,8 @@ interface ModalBodyProps {
 const ModalBody = ({ onClose, headerChildren, children, classNames, ...otherProps }: ModalBodyProps) => {
 
   return (
-    <div className={`fixed inset-0 z-[999] flex items-center justify-center bg-white dark:bg-black h-screen ${classNames ?? ""}`} {...otherProps}>
-      <div className="relative bg-white dark:bg-[#000000] rounded-lg shadow-lg w-11/12 max-w-lg mx-auto">
+    <div className={`fixed inset-0 z-[999] flex items-center justify-center bg-black/75 h-screen ${classNames ?? ""}`} {...otherProps}>
+      <div className="relative bg-white dark:bg-[#000000] rounded-lg shadow-lg w-11/12 max-w-lg mx-auto max-h-[90vh] overflow-y-auto">
         <div className="relative p-4">
           {headerChildren
             ? headerChildren
@@ -26,7 +26,7 @@ const ModalBody = ({ onClose, headerChildren, children, classNames, ...otherProp
                 onClick={onClose}
                 className="absolute right-5 top-3 text-gray-400 hover:text-gray-600 block float-right"
               >
-                <svg
+              <svg
                   className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
@@ -109,9 +109,11 @@ const ConfirmModal = observer(({
           <button
             onClick={onClose}
             className={`
+                  hover:opacity-70
+                  cursor-pointer
                   rounded-full bg-gray-100 px-5 py-2 font-bold text-gray-900 
                   disabled:opacity-40
-                `}
+            `}
             type="button"
           >
             {declineButtonText}
@@ -128,6 +130,8 @@ const ConfirmModal = observer(({
             }}
             disabled={(submitting ?? false) || loadingUpsert}
             className={`
+                  hover:opacity-70
+                  cursor-pointer
                   rounded-full bg-[#55a8c2] px-5 py-2 font-bold text-white ${confirmButtonClassNames && confirmButtonClassNames} 
                   disabled:opacity-40
                 `}

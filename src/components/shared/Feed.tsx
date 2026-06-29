@@ -1,6 +1,5 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { convertQueryStringToObject } from "@utils/index";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { PagingParams } from "@models/common";
@@ -8,12 +7,14 @@ import { leadingDebounce } from "@utils/common";
 import { ContentContainerWithRef } from "@common/Containers";
 import { NoRecordsTitle } from "@common/Titles";
 
-import CustomPageLoader from "@common/CustomLoader";
 import { TypeOfFeeds } from "@models/enums";
 import GroupCard from "@components/group/GroupCard";
 import { GroupRecord } from "@models/group";
 import { EventRecord } from "@models/event";
 import EventCard from "@components/event/EventCard";
+import LocalGuideCard from "@components/users/LocalGuideCard";
+import { SkeletonLoader } from "@common/CustomLoader";
+
 
 interface Props {
     typeOfFeed?: TypeOfFeeds;
@@ -62,14 +63,6 @@ const Feed = observer(({
         myGroupsFeedStore.pagingParams.currentPage
     ]);
 
-    const setFeedPredicate = useMemo(() => {
-        if (typeOfFeed === TypeOfFeeds.NearbyEvents) return eventsFeedStore.setPredicate;
-        else if (typeOfFeed === TypeOfFeeds.NearbyOnlineEvents) return onlineEventsFeedStore.setPredicate;
-        else if (typeOfFeed === TypeOfFeeds.MyEvents) return myEventsFeedStore.setPredicate;
-        else if (typeOfFeed === TypeOfFeeds.MyGroups) return myGroupsFeedStore.setPredicate;
-        else return groupsFeedStore.setPredicate;
-    }, []);
-
     const feedPagingParams = useMemo(() => {
         if (typeOfFeed === TypeOfFeeds.NearbyEvents) return eventsFeedStore.pagingParams;
         else if (typeOfFeed === TypeOfFeeds.NearbyOnlineEvents) return onlineEventsFeedStore.pagingParams;
@@ -102,14 +95,6 @@ const Feed = observer(({
         myGroupsFeedStore.pagingParams.currentPage,
     ]);
 
-    const filterPredicate: Map<string, any> = useMemo(() => {
-        if (typeOfFeed === TypeOfFeeds.NearbyEvents) return eventsFeedStore.predicate;
-        else if (typeOfFeed === TypeOfFeeds.NearbyOnlineEvents) return onlineEventsFeedStore.predicate;
-        else if (typeOfFeed === TypeOfFeeds.MyEvents) return myEventsFeedStore.predicate;
-        else if (typeOfFeed === TypeOfFeeds.MyGroups) return myGroupsFeedStore.predicate;
-        else return groupsFeedStore.predicate;
-    }, []);
-
     const loadRecords = async () => {
         if (typeOfFeed === TypeOfFeeds.NearbyEvents) await eventsFeedStore.loadEvents();
         else if (typeOfFeed === TypeOfFeeds.NearbyOnlineEvents) return onlineEventsFeedStore.loadOnlineEvents();
@@ -123,20 +108,6 @@ const Feed = observer(({
 
             setLoading(true);
             try {
-                const paramsFromQryString = convertQueryStringToObject(
-                    window.location.search
-                );
-
-                if (
-                    (paramsFromQryString.currentPage && paramsFromQryString.itemsPerPage)
-                    && (paramsFromQryString.currentPage !== filterPredicate.get('currentPage')
-                        || paramsFromQryString.itemsPerPage !== filterPredicate.get('itemsPerPage')
-                        || paramsFromQryString.searchTerm != filterPredicate.get('searchTerm'))) {
-
-                    setFeedPagingParams(new PagingParams(paramsFromQryString.currentPage, paramsFromQryString.itemsPerPage));
-                    setFeedPredicate('searchTerm', paramsFromQryString.searchTerm);
-                }
-
                 await loadRecords();
             } finally {
                 setLoading(false);
@@ -212,10 +183,51 @@ const Feed = observer(({
         };
     }, []);
 
-    const eventFeeds = useMemo(() => [TypeOfFeeds.NearbyEvents, TypeOfFeeds.NearbyOnlineEvents, TypeOfFeeds.MyEvents], []);
+
+    const noRecordsText = useMemo(() => {
+        if(typeOfFeed === TypeOfFeeds.NearbyEvents)
+            return "No Nearby Events Found";
+        else if(typeOfFeed === TypeOfFeeds.NearbyOnlineEvents)
+            return "No Nearby Online Events Found";
+        else if(typeOfFeed === TypeOfFeeds.NearbyGroups)
+            return "No Nearby Groups Found";
+        else if(typeOfFeed === TypeOfFeeds.MyEvents)
+            return "No Events Found";
+        else if(typeOfFeed === TypeOfFeeds.MyGroups)
+            return "No Groups Found";
+        else if(typeOfFeed === TypeOfFeeds.LocalGuides)
+            return "No Nearby Local Guides";
+        else
+            return "No Records Found";
+    }, [typeOfFeed]);
+
+    const renderCard = (rec: any) => {
+        if(typeOfFeed === TypeOfFeeds.MyGroups || typeOfFeed === TypeOfFeeds.NearbyGroups)
+             return <GroupCard
+                        key={rec.id}
+                        testId="localGuideCard"
+                        group={rec}
+                    />       
+        else if(typeOfFeed === TypeOfFeeds.MyEvents || typeOfFeed === TypeOfFeeds.NearbyEvents || typeOfFeed === TypeOfFeeds.NearbyOnlineEvents)
+            return <EventCard
+                        key={rec.id}
+                        testId="localGuideCard"
+                        event={rec}
+                    />
+        else if(typeOfFeed === TypeOfFeeds.LocalGuides)
+            return <LocalGuideCard
+                        key={rec.id}
+                        testId="localGuideCard"
+                        localGuide={rec}
+                    />
+        else
+            return <div />
+    }
+
+    
 
     if (loading)
-        return <CustomPageLoader title="Loading" />;
+        return <SkeletonLoader count={6} />;
 
     return (
         <ContentContainerWithRef
@@ -225,20 +237,14 @@ const Feed = observer(({
             innerRef={containerRef}
         >
             <div className={`
-                scrollbar-hide max-h-screen overflow-scroll 
-                dark:border-gray-800 grid w-full max-w-7xl grid-cols-2 
+                scrollbar-hide max-h-screen overflow-scroll
+                dark:border-gray-800 grid w-full max-w-7xl grid-cols-2
                 gap-4 sm:grid-cols-3 md:grid-cols-4
             `}>
                 {loadedRecords && loadedRecords.length
-                    ? loadedRecords.map((groupOrEventRec: EventRecord | GroupRecord) => (
-                        eventFeeds.some(fd => fd === typeOfFeed)
-                            ? <EventCard event={groupOrEventRec as EventRecord} key={groupOrEventRec.id} />
-                            : <GroupCard group={groupOrEventRec as GroupRecord} key={groupOrEventRec.id} />
-                    ))
+                    ? loadedRecords.map((groupOrEventRec: EventRecord | GroupRecord) => renderCard(groupOrEventRec))
                     : <NoRecordsTitle>
-                        {
-                            eventFeeds.some(fd => fd === typeOfFeed) ? "No Events to show" : "No Groups to show"
-                        }
+                        {noRecordsText}
                     </NoRecordsTitle>}
                 <LoadMoreTrigger />
             </div>

@@ -2,7 +2,7 @@ import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
 import agent from "@utils/common";
 import { store } from ".";
-import { EventRecord } from "@models/event";
+import { EventRecord, UpsertEventRequest } from "@models/event";
 
 export default class EventsFeedStore {
 
@@ -17,6 +17,10 @@ export default class EventsFeedStore {
 
 
     loadingInitial = false;
+    loadingUpsert = false;
+    setLoadingUpsert = (value: boolean) => {
+        this.loadingUpsert = value;
+    }
     predicate = new Map();
     setPredicate = (predicate: string, value: string | number | Date | undefined) => {
         if(value) {
@@ -60,9 +64,10 @@ export default class EventsFeedStore {
         const params = new URLSearchParams();
         params.append("currentPage", this.pagingParams.currentPage.toString());
         params.append("itemsPerPage", this.pagingParams.itemsPerPage.toString());
-        params.append("latitude", store.commonStore.userIpInfo?.latitude?.toString() ?? "27.7671");
-        params.append("longitude", store.commonStore.userIpInfo?.longitude?.toString() ?? "82.6384");
-
+        params.append("latitude", `${store.commonStore.userIpInfo?.latitude?.toString() ?? "27.7671"}`);
+        params.append("longitude", `${store.commonStore.userIpInfo?.longitude?.toString() ?? "82.6384"}`);
+        params.append("maxDistanceKm", "500.0");
+        
         this.predicate.forEach((value, key) => params.append(key, value));
 
         return params;
@@ -91,6 +96,38 @@ export default class EventsFeedStore {
 
     get nearbyEvents() {
         return Array.from(this.eventRegistry.values());
+    }
+
+    createEvent = async (values: UpsertEventRequest) => {
+        this.setLoadingUpsert(true);
+        try {
+            const created: EventRecord = await agent.eventsApiClient.createEvent(values);
+            runInAction(() => this.setEvent(created.id, created));
+            await store.myEventsFeedStore.loadMyEvents();
+            return created;
+        } finally {
+            this.setLoadingUpsert(false);
+        }
+    }
+
+    updateEvent = async (eventId: number, values: UpsertEventRequest) => {
+        this.setLoadingUpsert(true);
+        try {
+            await agent.eventsApiClient.updateEvent(eventId, values);
+            await store.myEventsFeedStore.loadMyEvents();
+        } finally {
+            this.setLoadingUpsert(false);
+        }
+    }
+
+    deleteEvent = async (eventId: number) => {
+        this.setLoadingUpsert(true);
+        try {
+            await agent.eventsApiClient.deleteEvent(eventId);
+            await store.myEventsFeedStore.loadMyEvents();
+        } finally {
+            this.setLoadingUpsert(false);
+        }
     }
 
 }

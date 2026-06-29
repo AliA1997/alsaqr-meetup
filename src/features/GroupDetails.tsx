@@ -1,4 +1,4 @@
-import CustomPageLoader from "@common/CustomLoader";
+import { SkeletonLoader } from "@common/CustomLoader";
 import { MapView } from "@common/Map";
 import GroupDetailsCard from "@components/group/GroupDetailsCard";
 import Marquee from "@components/shared/Marquee";
@@ -86,11 +86,11 @@ export default observer(() => {
 
 
     if(!loadedGroupDetails || !loadedSimilarGroups)
-        return <CustomPageLoader title="Loading" />;
+        return <SkeletonLoader count={6} />;
 
     return (
         <div className="h-screen">
-            <GroupDetailsCard group={loadedGroupDetails} />
+            <GroupDetailsCard group={loadedGroupDetails} onRefresh={getGroupDetails} />
             <div className="flex flex-col">
                 {loadedPastEvents && loadedPastEvents.length ? (
                     <div className="flex flex-col text-left">

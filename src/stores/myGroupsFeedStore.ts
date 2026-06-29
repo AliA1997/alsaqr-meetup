@@ -68,8 +68,9 @@ export default class MyGroupsFeedStore {
     }
 
     loadMyGroups = async () => {
-
+        
         this.setLoadingInitial(true);
+        this.myGroupRegistry.clear();
         try {
             const { items, pagination } = await agent.groupsApiClient.getMyGroups(this.axiosParams);
 

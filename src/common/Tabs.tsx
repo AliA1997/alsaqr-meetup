@@ -5,6 +5,7 @@ import { ContentContainerWithRef } from "./Containers";
 import { CommonLink } from "./Links";
 import { NoRecordsTitle } from "./Titles";
 
+
 type TabsProps = {
   tabs: {
     tabKey: string;

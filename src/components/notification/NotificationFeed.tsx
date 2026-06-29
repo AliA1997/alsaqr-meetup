@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useRef } from "react";
-import { convertQueryStringToObject } from "@utils/index";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { PagingParams } from "@models/common";
 import { NoRecordsTitle, PageTitle } from "@common/Titles";
 import { ContentContainerWithRef } from "@common/Containers";
-import CustomPageLoader from "@common/CustomLoader";
+import { SkeletonLoader } from "@common/CustomLoader";
 import NotificationItemComponent from "./NotificationItem";
-import { leadingDebounce } from "@utils/common";
 
-interface Props { }
+interface Props {}
 
-const NotificationFeed = observer(({ }: Props) => {
-
+const NotificationFeed = observer(({}: Props) => {
   const { authStore } = useStore();
   const { currentSessionUser } = authStore;
-  const userId = useMemo(() => currentSessionUser ? currentSessionUser.id : "", [currentSessionUser]);
+  const userId = useMemo(
+    () => (currentSessionUser ? currentSessionUser.id : ""),
+    [currentSessionUser],
+  );
 
   const { notificationStore } = useStore();
   const {
@@ -23,57 +23,33 @@ const NotificationFeed = observer(({ }: Props) => {
     loadingInitial,
     setPagingParams,
     pagingParams,
-    setPredicate,
-    predicate,
     pagination,
-    notifications
+    notifications,
   } = notificationStore;
 
   const containerRef = useRef(null);
   const loaderRef = useRef(null);
 
-
   async function getNotifications() {
-    leadingDebounce(async () => {
-
-      try {
-        const paramsFromQryString = convertQueryStringToObject(
-          window.location.search
-        );
-
-        if (
-          (paramsFromQryString.currentPage && paramsFromQryString.itemsPerPage)
-          && (paramsFromQryString.currentPage !== predicate.get('currentPage')
-            || paramsFromQryString.itemsPerPage !== predicate.get('itemsPerPage')
-            || paramsFromQryString.searchTerm != predicate.get('searchTerm'))) {
-
-          setPagingParams(new PagingParams(paramsFromQryString.currentPage, paramsFromQryString.itemsPerPage));
-          setPredicate('searchTerm', paramsFromQryString.searchTerm);
-        }
-
-        if (userId)
-          await loadNotifications(userId);
-      } finally {
-      }
-    }, 10000);
+    try {
+      if (userId) await loadNotifications(userId);
+    } finally {
+    }
   }
 
   const fetchMoreItems = async (pageNum: number) => {
-    setPagingParams(new PagingParams(pageNum, 10))
-    if (userId)
-      await loadNotifications(userId);
+    setPagingParams(new PagingParams(pageNum, 10));
+    if (userId) await loadNotifications(userId);
   };
-
 
   useEffect(() => {
     getNotifications();
   }, []);
 
-
   // 1. Add this loader component at the end of your posts list
   const LoadMoreTrigger = () => {
     return (
-      <div ref={loaderRef} style={{ height: '20px' }}>
+      <div ref={loaderRef} style={{ height: "20px" }}>
         {loadingInitial && <div>Loading more notifications...</div>}
       </div>
     );
@@ -84,22 +60,27 @@ const NotificationFeed = observer(({ }: Props) => {
     const observer = new IntersectionObserver(
       (entries) => {
         const firstEntry = entries[0];
-        const currentPage = pagination?.currentPage ?? 0;
+        const currentPage = pagination?.currentPage ?? 1;
         const itemsPerPage = pagination?.itemsPerPage ?? 10;
         const totalItems = pagination?.totalItems ?? 0;
 
         const nextPage = currentPage + 1;
         const totalItemsOnNextPage = nextPage * itemsPerPage;
-        const hasMoreItems = (totalItems > totalItemsOnNextPage);
-        if (firstEntry?.isIntersecting && !loadingInitial && hasMoreItems && notifications.length > 0) {
+        const hasMoreItems = totalItems > totalItemsOnNextPage;
+        if (
+          firstEntry?.isIntersecting &&
+          !loadingInitial &&
+          hasMoreItems &&
+          notifications.length > 0
+        ) {
           fetchMoreItems(pagingParams.currentPage + 1);
         }
       },
       {
         root: containerRef.current,
-        rootMargin: '100px',
-        threshold: 0.2
-      }
+        rootMargin: "100px",
+        threshold: 0.2,
+      },
     );
 
     const currentLoader = loaderRef.current;
@@ -114,7 +95,6 @@ const NotificationFeed = observer(({ }: Props) => {
     };
   }, []);
 
-
   return (
     <div className="col-span-7 text-left scrollbar-hide border-x max-h-screen overflow-scroll lg:col-span-5 dark:border-gray-800">
       <PageTitle>Your Notifications</PageTitle>
@@ -126,17 +106,19 @@ const NotificationFeed = observer(({ }: Props) => {
         ref={containerRef}
       >
         {loadingInitial ? (
-          <CustomPageLoader title="Loading" />
+          <SkeletonLoader count={4} />
         ) : (
           <>
-            {notifications && notifications.length
-              ? notifications.map((notificationRecord, notificationKey) => (
+            {notifications && notifications.length ? (
+              notifications.map((notificationRecord, notificationKey) => (
                 <NotificationItemComponent
-                  key={notificationRecord.notification.id ?? notificationKey}
+                  key={notificationRecord.notificationId ?? notificationKey}
                   notificationToDisplay={notificationRecord}
                 />
               ))
-              : <NoRecordsTitle>No Notifications to show</NoRecordsTitle>}
+            ) : (
+              <NoRecordsTitle>No Notifications to show</NoRecordsTitle>
+            )}
             <LoadMoreTrigger />
           </>
         )}
@@ -144,6 +126,5 @@ const NotificationFeed = observer(({ }: Props) => {
     </div>
   );
 });
-
 
 export default NotificationFeed;

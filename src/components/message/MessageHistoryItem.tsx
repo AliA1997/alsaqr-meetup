@@ -38,17 +38,18 @@ function MessageHistoryItemComponent({
         <>
             <div
                 className={`
-                    flex flex-col relative justify-between space-x-3 border-y border-gray-100 p-5 
-                    hover:shadow-lg dark:border-gray-800 dark:hover:bg-[#000000] rounded-sm 
+                    flex flex-col relative justify-between space-x-3 border-y border-gray-100 p-5
+                    hover:shadow-lg dark:border-gray-800 dark:hover:bg-[#000000] rounded-sm
                     p-2 hover:shadow-lg dark:border-gray-800 dark:hover:bg-[#0e1517] rounded-sm
                     w-full
                     h-[12.5rem]
                     cursor-pointer
                 `}
+                data-testid="messagehistorycard"
             >
                 {/* On click handler on button below */}
-                <button 
-                    type="button" 
+                <button
+                    type="button"
                     className="absolute m-0 inset-0 w-full h-full bg-transparent z-10"
                     onClick={onClick}
                 ></button>
@@ -60,7 +61,10 @@ function MessageHistoryItemComponent({
                             alt={messageHistoryItem.receiverUsername}
                         />
                     )}
-                    <div className="flex flex-col justify-between item-center space-x-1">
+                    <div
+                        className="flex flex-col justify-between item-center space-x-1"
+                        data-testid="messagehistorytext"
+                    >
                         <p className='text-sm'>
                             {messageHistoryItem.receiverUsername}
                         </p>

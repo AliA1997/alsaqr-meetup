@@ -1,16 +1,54 @@
-interface CustomPageLoaderProps { title: string };
-const CustomPageLoader = ({ title }: CustomPageLoaderProps) => {
+import React from "react";
+import Lottie from "lottie-react";
+import featherConfig from "../animated-icons/feather.json";
+
+export const SuspenseLoader = React.memo(function () {
   return (
-    <div id="page-loader-container">
-      <div className="wave">
-        <h2>{title}</h2>
-        <h2>{title}</h2>
-      </div>
+    <div className='flex flex-row justify-center items-center w-full h-full'>
+      <img
+        data-testid="navlogo"
+        src="https://res.cloudinary.com/aa1997/image/upload/v1751518818/new-desktop-logo_ocwyft.svg"
+        className={`
+        m-0 h-42 md:h-48 lg:h-60 2xl:h-82 w-42 md:w-48 lg:w-60 2xl:w-82 transition-all duration-200
+        cursor-pointer
+    `}
+        alt="AlSaqr Logo"
+        style={{ maxWidth: "unset" }}
+      />
+      <Lottie
+        animationData={featherConfig}
+        className="h-[5rem] w-[5rem] md:h-[8rem] md:w-[8rem] 2xl:h-[9.5rem] 2xl:w-[9.5rem] text-[#55a8c2] mt-[2rem]"
+        loop={true}
+      />
     </div>
   );
-};
+});
 
-export default CustomPageLoader;
+
+interface SkeletonLoaderProps {
+  count?: number;
+  className?: string;
+}
+
+export const SkeletonLoader = React.memo(function SkeletonLoader({
+  count = 1,
+  className,
+}: SkeletonLoaderProps) {
+  return (
+    <div className="space-y-4 w-full">
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          className={`animate-pulse flex flex-col space-y-3 dark:bg-[#1d2a2e] bg-gray-100 p-4 rounded-md w-full ${className && className}`}
+        >
+          <div className="h-6 dark:bg-[#0e1517] bg-gray-300 rounded w-3/4" />
+          <div className="h-4 dark:bg-[#0e1517] bg-gray-300 rounded w-full" />
+          <div className="h-4 dark:bg-[#0e1517] bg-gray-300 rounded w-5/6" />
+        </div>
+      ))}
+    </div>
+  );
+});
 
 
 export const ModalLoader = () => (

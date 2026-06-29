@@ -13,6 +13,7 @@ import LocalGuides from "@features/LocalGuides";
 import GroupDetails from "@features/GroupDetails";
 import EventDetails from "@features/EventDetails";
 import LocalGuideDetails from "@features/LocalGuideDetails";
+import AdminDashboard from "@features/AdminDashboard";
 
 export const routes: RouteObject[] = [
   {
@@ -26,6 +27,7 @@ export const routes: RouteObject[] = [
       { path: '/events', element: <NearbyEvents /> },
       { path: '/events/:slug', element: <EventDetails /> },
       { path: '/online-events', element: <NearbyOnlineEvents /> },
+      { path: '/admin', element: <AdminDashboard /> },
       { path: '/my-events', element: <MyEvents /> },
       { path: '/my-groups', element: <MyGroups  /> },
       { path: '/local-guides', element: <LocalGuides  /> },
