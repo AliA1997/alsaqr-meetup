@@ -81,3 +81,8 @@ export const NOT_ALLOWED_NSFW_CHECKER_RESULTS = {
   "Somewhat Explicit": 'Somewhat Explicit',
   'Very Explicit': 'Very Explicit'
 };
+
+
+export const OAUTH_OPTIONS = {
+  redirectTo: import.meta.env.VITE_PUBLIC_MEETUP_URL
+}

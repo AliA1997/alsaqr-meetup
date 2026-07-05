@@ -2,7 +2,7 @@ import { ModalBody, ModalPortal } from "@common/Modal";
 import { useStore } from "@stores/index";
 import { observer } from "mobx-react-lite";
 import { supabase } from "@utils/supabase";
-import { ROUTES_USER_CANT_ACCESS } from "@utils/constants";
+import { OAUTH_OPTIONS, ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { useLocation } from "react-router";
 
 
@@ -14,12 +14,15 @@ export const LoginModal = observer(() => {
 
   const handleDiscordSignIn = () => supabase.auth.signInWithOAuth({
     provider: "discord",
+    options: OAUTH_OPTIONS
   });
   const handleGoogleSignIn = () => supabase.auth.signInWithOAuth({
     provider: "google",
+    options: OAUTH_OPTIONS
   });
   const handleFacebookSignIn = () => supabase.auth.signInWithOAuth({
     provider: "facebook",
+    options: OAUTH_OPTIONS
   });
   
   return (
