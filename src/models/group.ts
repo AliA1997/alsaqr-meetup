@@ -1,6 +1,14 @@
 
+export interface GroupMember {
+    userId: string;
+    username: string;
+    email: string;
+    avatar?: string;
+    joinedAt: string; // ISO timestamp
+}
+
 export interface GroupRecord {
-    id: number;
+    id: string;
     slug: string;
     name: string;
     description: string;
@@ -17,12 +25,14 @@ export interface GroupRecord {
     founderId?: string;
     founderUsername?: string;
     founderAvatar?: string;
+    // Current logged-in user's membership status
+    userMembershipStatus?: 'joined' | 'not_joined';
 }
 
 // Create/update payload. Only `name` and `description` are required; the rest are
 // optional (see spec). `id` present => update, absent => create.
 export interface UpsertGroupRequest {
-    id?: number;
+    id?: string;
     name: string;
     description: string;
     hqCity?: string;

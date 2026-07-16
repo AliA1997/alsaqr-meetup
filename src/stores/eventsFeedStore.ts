@@ -11,19 +11,23 @@ export default class EventsFeedStore {
 
         reaction(
             () => this.predicate.keys(),
-            () => {}
+            () => { }
         );
     }
 
 
     loadingInitial = false;
     loadingUpsert = false;
+    loadingJoinLeave = false;
     setLoadingUpsert = (value: boolean) => {
         this.loadingUpsert = value;
     }
+    setLoadingJoinLeave = (value: boolean) => {
+        this.loadingJoinLeave = value;
+    }
     predicate = new Map();
     setPredicate = (predicate: string, value: string | number | Date | undefined) => {
-        if(value) {
+        if (value) {
             this.predicate.set(predicate, value);
         } else {
             this.predicate.delete(predicate);
@@ -32,10 +36,10 @@ export default class EventsFeedStore {
     pagingParams: PagingParams = new PagingParams(1, 25);
     pagination: Pagination | undefined = undefined;
 
-    eventRegistry: Map<number, EventRecord> = new Map<number, EventRecord>();
+    eventRegistry: Map<string, EventRecord> = new Map<string, EventRecord>();
 
-    eventToViewId: number | undefined;
-    setEventToViewId = (val: number | undefined) => {
+    eventToViewId: string | undefined;
+    setEventToViewId = (val: string | undefined) => {
         this.eventToViewId = val;
     }
     setPagingParams = (pagingParams: PagingParams) => {
@@ -47,7 +51,7 @@ export default class EventsFeedStore {
     setSearchQry = (val: string) => this.predicate.set('searchQry', val);
 
 
-    setEvent = (eventId: number, event: EventRecord) => {
+    setEvent = (eventId: string, event: EventRecord) => {
         this.eventRegistry.set(eventId, event);
     }
 
@@ -67,7 +71,7 @@ export default class EventsFeedStore {
         params.append("latitude", `${store.commonStore.userIpInfo?.latitude?.toString() ?? "27.7671"}`);
         params.append("longitude", `${store.commonStore.userIpInfo?.longitude?.toString() ?? "82.6384"}`);
         params.append("maxDistanceKm", "500.0");
-        
+
         this.predicate.forEach((value, key) => params.append(key, value));
 
         return params;
@@ -110,7 +114,7 @@ export default class EventsFeedStore {
         }
     }
 
-    updateEvent = async (eventId: number, values: UpsertEventRequest) => {
+    updateEvent = async (eventId: string, values: UpsertEventRequest) => {
         this.setLoadingUpsert(true);
         try {
             await agent.eventsApiClient.updateEvent(eventId, values);
@@ -120,13 +124,45 @@ export default class EventsFeedStore {
         }
     }
 
-    deleteEvent = async (eventId: number) => {
+    deleteEvent = async (eventId: string) => {
         this.setLoadingUpsert(true);
         try {
             await agent.eventsApiClient.deleteEvent(eventId);
             await store.myEventsFeedStore.loadMyEvents();
         } finally {
             this.setLoadingUpsert(false);
+        }
+    }
+
+    joinEvent = async (eventId: string) => {
+        this.setLoadingJoinLeave(true);
+        try {
+            await agent.eventsApiClient.joinEvent(eventId);
+            runInAction(() => {
+                const event = this.eventRegistry.get(eventId);
+                if (event) {
+                    event.userAttendanceStatus = 'attending';
+                    this.setEvent(eventId, event);
+                }
+            });
+        } finally {
+            this.setLoadingJoinLeave(false);
+        }
+    }
+
+    leaveEvent = async (eventId: string, userId: string) => {
+        this.setLoadingJoinLeave(true);
+        try {
+            await agent.eventsApiClient.leaveEvent(eventId, userId);
+            runInAction(() => {
+                const event = this.eventRegistry.get(eventId);
+                if (event) {
+                    event.userAttendanceStatus = 'not_attending';
+                    this.setEvent(eventId, event);
+                }
+            });
+        } finally {
+            this.setLoadingJoinLeave(false);
         }
     }
 

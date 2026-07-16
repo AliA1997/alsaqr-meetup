@@ -15,7 +15,7 @@ import { useParams } from "react-router";
 
 export default observer(() => {
      const [activeMarker, setActiveMarker] = useState<{
-        id: number;
+        id: string | number;
         latitude: number;
         longitude: number;
     } | undefined>(undefined);
@@ -68,20 +68,21 @@ export default observer(() => {
     }, [slug])
 
     const mainCoords: EntityMarker = useMemo(() => {
+
         if(!loadedGroupDetails?.latitude || !loadedGroupDetails?.longitude)
             return {
                 id: loadedGroupDetails?.id ?? 0,
                 latitude: userIpInfo?.latitude ?? 27.31,
                 longitude: userIpInfo?.longitude ?? 102.2,
                 name: loadedGroupDetails?.name ?? "",
-            };
+            } as EntityMarker;
         else 
             return {
-                id: loadedGroupDetails.id ?? 0,
-                latitude: loadedGroupDetails.latitude,
-                longitude: loadedGroupDetails.longitude,
-                name: loadedGroupDetails.name ?? "",  
-            };
+                id: loadedGroupDetails?.id ?? 0,
+                latitude: loadedGroupDetails?.latitude ?? 27.31,
+                longitude: loadedGroupDetails?.longitude ?? 102.2,
+                name: loadedGroupDetails?.name ?? "",  
+            } as EntityMarker;
     }, [loadedGroupDetails])
 
 

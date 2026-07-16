@@ -9,7 +9,7 @@ import UpsertEventForm from "./UpsertEventForm";
 interface CreateEventButtonProps {
     // The group this event will belong to. Events are only created from their group's
     // details page, so the group is always known here.
-    groupId: number;
+    groupId: string;
     // Called after an event is successfully created so the group's details page can refresh
     // in place and show the new event.
     onUpdated?: () => void;

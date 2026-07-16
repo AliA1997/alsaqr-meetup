@@ -1,6 +1,11 @@
 import Carousel from "@components/shared/Carousel";
 import { EventRecord } from "@models/event";
 import EventOwnerActions from "./EventOwnerActions";
+import JoinEventButton from "./JoinEventButton";
+import EventMembers from "./EventMembers";
+import { useStore } from "@stores/index";
+import { useState } from "react";
+import { observer } from "mobx-react-lite";
 
 
 interface EventDetailsCardProps {
@@ -9,10 +14,21 @@ interface EventDetailsCardProps {
   onRefresh?: () => void;
 }
 
-export default function EventDetailsCard({
+export default observer(function EventDetailsCard({
   event,
   onRefresh
 }: EventDetailsCardProps) {
+  const { authStore } = useStore();
+  const [refreshAttendees, setRefreshAttendees] = useState(false);
+  
+  const isFounder = !!authStore.currentSessionUser && authStore.currentSessionUser.id === event.groupFounderId;
+  const isLoggedIn = !!authStore.currentSessionUser;
+  const isAttending = event.userAttendanceStatus === 'attending';
+
+  const handleAttendanceChange = () => {
+    onRefresh?.();
+  };
+
   return (
     <div data-testid="eventdetailscard" className="flex flex-col">
 
@@ -21,7 +37,19 @@ export default function EventDetailsCard({
 
         <div className="flex w-full flex-col space-y-4 px-0 py-2 md:w-1/2 md:px-4 lg:px-12">
           <p className="p-2 text-[2rem] font-bold md:text-[2.5rem]">{event.name}</p>
+          {isAttending && (
+            <div className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-full text-sm font-medium w-fit">
+              ✓ You are attending this event
+            </div>
+          )}
           <EventOwnerActions event={event} onUpdated={onRefresh} />
+          {isLoggedIn && !isFounder && (
+            <JoinEventButton 
+              eventId={event.id} 
+              isAttending={isAttending} 
+              onAttendanceChange={handleAttendanceChange} 
+            />
+          )}
 
         </div>
       </section>
@@ -55,6 +83,19 @@ export default function EventDetailsCard({
             </table>
           </div>
       </section>
+      {isFounder && (
+        <section className="mt-6 px-4">
+          <EventMembers 
+            eventId={event.id} 
+            groupId={event.groupId}
+            canManage={isFounder}
+            onAttendeeRemoved={() => {
+              onRefresh?.();
+              setRefreshAttendees(!refreshAttendees);
+            }}
+          />
+        </section>
+      )}
     </div>
   );
-}
+});

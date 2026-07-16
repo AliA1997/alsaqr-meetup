@@ -14,7 +14,7 @@ import { useParams } from "react-router";
 
 export default observer(() => {
     const [activeMarker, setActiveMarker] = useState<{
-        id: number;
+        id: string | number;
         latitude: number;
         longitude: number;
     } | undefined>(undefined);
@@ -73,14 +73,14 @@ export default observer(() => {
                 latitude: userIpInfo?.latitude ?? 27.31,
                 longitude: userIpInfo?.longitude ?? 102.2,
                 name: loadedEventDetails?.name ?? "",
-            };
+            } as EntityMarker;
         else 
             return {
                 id: loadedEventDetails?.id ?? 0,
                 latitude: eventCoords.latitude,
                 longitude: eventCoords.longitude,
                 name: loadedEventDetails?.name ?? "",  
-            };
+            } as EntityMarker;
 
     }, [loadedEventDetails])
 

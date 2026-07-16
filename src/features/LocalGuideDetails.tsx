@@ -14,7 +14,7 @@ import { useParams } from "react-router";
 
 export default observer(() => {
     const [activeMarker, setActiveMarker] = useState<{
-        id: number;
+        id: string | number;
         latitude: number;
         longitude: number;
     } | undefined>(undefined);

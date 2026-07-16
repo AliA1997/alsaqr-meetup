@@ -28,10 +28,10 @@ export default class MyEventsFeedStore {
     pagingParams: PagingParams = new PagingParams(1, 25);
     pagination: Pagination | undefined = undefined;
 
-    myEventRegistry: Map<number, EventRecord> = new Map<number, EventRecord>();
+    myEventRegistry: Map<string, EventRecord> = new Map<string, EventRecord>();
 
-    myEventToViewId: number | undefined;
-    setMyEventToViewId = (val: number) => {
+    myEventToViewId: string | undefined;
+    setMyEventToViewId = (val: string) => {
         this.myEventToViewId = val;
     }
     setPagingParams = (pagingParams: PagingParams) => {
@@ -43,7 +43,7 @@ export default class MyEventsFeedStore {
     setSearchQry = (val: string) => this.predicate.set('searchQry', val);
 
 
-    setMyEvent = (eventId: number, event: EventRecord) => {
+    setMyEvent = (eventId: string, event: EventRecord) => {
         this.myEventRegistry.set(eventId, event);
     }
 

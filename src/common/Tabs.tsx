@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { ModalLoader } from "./CustomLoader";
+import { SkeletonLoader } from "./CustomLoader";
 import { OptimizedImage } from "./Image";
 import { ContentContainerWithRef } from "./Containers";
 import { CommonLink } from "./Links";
@@ -103,7 +103,7 @@ function Tabs({ tabs, showNumberOfRecords, loading, loadOnTabSwitch, containerCl
           >
 
             {loading 
-              ? <ModalLoader />
+              ? <SkeletonLoader count={5} />
               : tC.content && tC.content.length ? (
                   tC.content.map(tC.renderer)
                 ) : (

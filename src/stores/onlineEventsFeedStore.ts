@@ -28,7 +28,7 @@ export default class OnlineEventsFeedStore {
     pagingParams: PagingParams = new PagingParams(1, 25);
     pagination: Pagination | undefined = undefined;
 
-    onlineEventRegistry: Map<number, EventRecord> = new Map<number, EventRecord>();
+    onlineEventRegistry: Map<string, EventRecord> = new Map<string, EventRecord>();
 
     onlineEventToViewId: number | undefined;
     setOnlineEventToViewId = (val: number) => {
@@ -43,7 +43,7 @@ export default class OnlineEventsFeedStore {
     setSearchQry = (val: string) => this.predicate.set('searchQry', val);
 
 
-    setOnlineEvent = (eventId: number, event: EventRecord) => {
+    setOnlineEvent = (eventId: string, event: EventRecord) => {
         this.onlineEventRegistry.set(eventId, event);
     }
 

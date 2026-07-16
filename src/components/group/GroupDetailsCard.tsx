@@ -5,6 +5,9 @@ import { useStore } from "@stores/index";
 import GroupOwnerActions from "./GroupOwnerActions";
 import CreateEventButton from "@components/event/CreateEventButton";
 import ContactFounderButton from "./ContactFounderButton";
+import JoinGroupButton from "./JoinGroupButton";
+import GroupMembers from "./GroupMembers";
+import { useState } from "react";
 
 
 
@@ -19,8 +22,15 @@ export default observer(function GroupDetailsCard({
   onRefresh
 }: GroupDetailsCardProps) {
   const { authStore } = useStore();
+  const [refreshMembers, setRefreshMembers] = useState(false);
   // Only the group's founder may add events; everyone else gets "Contact founder".
   const isFounder = !!authStore.currentSessionUser && authStore.currentSessionUser.id === group.founderId;
+  const isLoggedIn = !!authStore.currentSessionUser;
+  const isJoined = group.userMembershipStatus === 'joined';
+
+  const handleJoinSuccess = () => {
+    onRefresh?.();
+  };
 
   return (
     <div data-testid="groupdetailscard" className="flex flex-col">
@@ -30,11 +40,23 @@ export default observer(function GroupDetailsCard({
 
         <div className="flex w-full flex-col items-center space-y-4 px-0 py-2 md:w-1/2 md:px-4 lg:px-12">
           <p className="p-2 text-[2rem] font-bold md:text-[2.5rem]">{group.name}</p>
+          {isJoined && (
+            <div className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-full text-sm font-medium">
+              ✓ You are a member of this group
+            </div>
+          )}
           <GroupOwnerActions group={group} onUpdated={onRefresh} />
-          <div className="px-2">
+          <div className="px-2 flex flex-col gap-2 w-full items-center">
             {isFounder
               ? <CreateEventButton groupId={group.id} onUpdated={onRefresh} />
               : <ContactFounderButton group={group} />}
+            {isLoggedIn && !isFounder && (
+              <JoinGroupButton 
+                groupId={group.id} 
+                isJoined={isJoined} 
+                onJoinSuccess={handleJoinSuccess} 
+              />
+            )}
           </div>
 
         </div>
@@ -77,6 +99,18 @@ export default observer(function GroupDetailsCard({
             </table>
           </div>
       </section>
+      {isFounder && (
+        <section className="mt-6 px-4">
+          <GroupMembers 
+            groupId={group.id} 
+            canManage={isFounder}
+            onMemberRemoved={() => {
+              onRefresh?.();
+              setRefreshMembers(!refreshMembers);
+            }}
+          />
+        </section>
+      )}
     </div>
   );
 });

@@ -28,9 +28,9 @@ export default class MyGroupsFeedStore {
     pagingParams: PagingParams = new PagingParams(1, 25);
     pagination: Pagination | undefined = undefined;
 
-    myGroupRegistry: Map<number, GroupRecord> = new Map<number, GroupRecord>();
-    myGroupToViewId: number | undefined;
-    setMyGroupToViewId = (val: number) => {
+    myGroupRegistry: Map<string, GroupRecord> = new Map<string, GroupRecord>();
+    myGroupToViewId: string | undefined;
+    setMyGroupToViewId = (val: string) => {
         this.myGroupToViewId = val;
     }
     setPagingParams = (pagingParams: PagingParams) => {
@@ -42,7 +42,7 @@ export default class MyGroupsFeedStore {
     setSearchQry = (val: string) => this.predicate.set('searchQry', val);
 
 
-    setMyGroup = (groupId: number, group: GroupRecord) => {
+    setMyGroup = (groupId: string, group: GroupRecord) => {
         this.myGroupRegistry.set(groupId, group);
     }
 

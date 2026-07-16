@@ -85,7 +85,7 @@ export interface RePostCommentParams {
 
 
 export interface EntityMarker {
-    id: number;
+    id: number | string;
     latitude: number;
     longitude: number;
     name: string;

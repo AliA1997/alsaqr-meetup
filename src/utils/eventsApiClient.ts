@@ -9,14 +9,22 @@ export const eventsApiClient = {
         axios.get(`/api/Events/online`, { params }).then(axiosResponseBody),
     getMyEvents: (params: URLSearchParams | undefined) =>
         axios.get(`/api/Events/my`, { params }).then(axiosResponseBody),
-    getEventDetails: (eventId: number, params: URLSearchParams) =>
+    getEventDetails: (eventId: string, params: URLSearchParams) =>
         axios.get(`/api/EventDetails/${eventId}`, { params }).then(axiosResponseBody),
-    getNearbyEventByCurrentEvent: (eventId: number, params: URLSearchParams) =>
+    getNearbyEventByCurrentEvent: (eventId: string, params: URLSearchParams) =>
         axios.get(`/api/EventDetails/${eventId}/nearby`, { params }).then(axiosResponseBody),
     createEvent: (values: UpsertEventRequest) =>
         axios.post(`/api/Events`, {values}).then(axiosResponseBody),
-    updateEvent: (eventId: number, values: UpsertEventRequest) =>
+    updateEvent: (eventId: string, values: UpsertEventRequest) =>
         axios.put(`/api/Events/${eventId}`, {values}).then(axiosResponseBody),
-    deleteEvent: (eventId: number) =>
+    deleteEvent: (eventId: string) =>
         axios.delete(`/api/Events/${eventId}`).then(axiosResponseBody),
+    // Join/leave event
+    joinEvent: (eventId: string) =>
+        axios.post(`/api/Events/${eventId}/join`).then(axiosResponseBody),
+    leaveEvent: (eventId: string, userID: string) =>
+        axios.delete(`/api/Events/${eventId}/members/${userID}`).then(axiosResponseBody),
+    // Get event attendees
+    // getEventAttendees: (eventId: string) =>
+    //     axios.get(`/api/Events/${eventId}/attendees`).then(axiosResponseBody),
 }

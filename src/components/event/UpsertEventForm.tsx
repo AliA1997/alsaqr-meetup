@@ -12,7 +12,7 @@ interface UpsertEventFormProps {
     event?: EventRecord;
     // Set when creating from a group details page — the event is pre-associated with this
     // group (events are only created from the group they belong to).
-    groupId?: number;
+    groupId?: string;
     onClose: () => void;
     // Invoked after a successful edit (not on create or cancel) so the caller can
     // refresh whichever view it owns.

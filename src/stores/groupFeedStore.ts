@@ -18,8 +18,12 @@ export default class GroupsFeedStore {
 
     loadingInitial = false;
     loadingUpsert = false;
+    loadingJoinLeave = false;
     setLoadingUpsert = (value: boolean) => {
         this.loadingUpsert = value;
+    }
+    setLoadingJoinLeave = (value: boolean) => {
+        this.loadingJoinLeave = value;
     }
     predicate = new Map();
     setPredicate = (predicate: string, value: string | number | Date | undefined) => {
@@ -32,9 +36,9 @@ export default class GroupsFeedStore {
     pagingParams: PagingParams = new PagingParams(1, 25);
     pagination: Pagination | undefined = undefined;
 
-    groupRegistry: Map<number, GroupRecord> = new Map<number, GroupRecord>();
-    groupToViewId: number | undefined;
-    setGroupToViewId = (val: number) => {
+    groupRegistry: Map<string, GroupRecord> = new Map<string, GroupRecord>();
+    groupToViewId: string | undefined;
+    setGroupToViewId = (val: string) => {
         this.groupToViewId = val;
     }
     setPagingParams = (pagingParams: PagingParams) => {
@@ -46,7 +50,7 @@ export default class GroupsFeedStore {
     setSearchQry = (val: string) => this.predicate.set('searchQry', val);
 
 
-    setGroup = (groupId: number, group: GroupRecord) => {
+    setGroup = (groupId: string, group: GroupRecord) => {
         this.groupRegistry.set(groupId, group);
     }
 
@@ -107,7 +111,7 @@ export default class GroupsFeedStore {
         }
     }
 
-    updateGroup = async (groupId: number, values: UpsertGroupRequest) => {
+    updateGroup = async (groupId: string, values: UpsertGroupRequest) => {
         this.setLoadingUpsert(true);
         try {
             await agent.groupsApiClient.updateGroup(groupId, values);
@@ -117,13 +121,45 @@ export default class GroupsFeedStore {
         }
     }
 
-    deleteGroup = async (groupId: number) => {
+    deleteGroup = async (groupId: string) => {
         this.setLoadingUpsert(true);
         try {
             await agent.groupsApiClient.deleteGroup(groupId);
             runInAction(() => store.myGroupsFeedStore.myGroupRegistry.delete(groupId));
         } finally {
             this.setLoadingUpsert(false);
+        }
+    }
+
+    joinGroup = async (groupId: string) => {
+        this.setLoadingJoinLeave(true);
+        try {
+            await agent.groupsApiClient.joinGroup(groupId);
+            runInAction(() => {
+                const group = this.groupRegistry.get(groupId);
+                if (group) {
+                    group.userMembershipStatus = 'joined';
+                    this.setGroup(groupId, group);
+                }
+            });
+        } finally {
+            this.setLoadingJoinLeave(false);
+        }
+    }
+
+    leaveGroup = async (groupId: string, userId: string) => {
+        this.setLoadingJoinLeave(true);
+        try {
+            await agent.groupsApiClient.leaveGroup(groupId, userId);
+            runInAction(() => {
+                const group = this.groupRegistry.get(groupId);
+                if (group) {
+                    group.userMembershipStatus = 'not_joined';
+                    this.setGroup(groupId, group);
+                }
+            });
+        } finally {
+            this.setLoadingJoinLeave(false);
         }
     }
 }

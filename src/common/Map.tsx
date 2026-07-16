@@ -14,8 +14,8 @@ type MapViewProps = {
     mainCoords: EntityMarker;
     classNames?: string;
     similarRecords?: GroupRecord[] | EventRecord[];
-    setActiveMarker: (marker: { id: number, latitude: number, longitude: number }) => void;
-    activeMarker: { id: number, latitude: number, longitude: number } | undefined;
+    setActiveMarker: (marker: { id: string | number, latitude: number, longitude: number }) => void;
+    activeMarker: { id: string | number, latitude: number, longitude: number } | undefined;
     onlyDisplay?: boolean;
 };
 
