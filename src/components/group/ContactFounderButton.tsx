@@ -26,7 +26,6 @@ const ContactFounderButton = observer(({ group }: ContactFounderButtonProps) => 
     const [sent, setSent] = useState(false);
 
     const sendMessage = async () => {
-        debugger;
         if (!currentSessionUser || !group.founderId) return;
 
         const messageForm: MessageFormDto = {

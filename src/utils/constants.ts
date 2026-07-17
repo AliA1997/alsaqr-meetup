@@ -86,3 +86,6 @@ export const NOT_ALLOWED_NSFW_CHECKER_RESULTS = {
 export const OAUTH_OPTIONS = {
   redirectTo: import.meta.env.VITE_PUBLIC_MEETUP_URL
 }
+
+// Base of a user's profile on the main AlSaqr site: `${ALSAQR_PROFILE_BASE}/${username}`.
+export const ALSAQR_PROFILE_BASE = `${import.meta.env.VITE_PUBLIC_ALSAQR_URL}/users`;

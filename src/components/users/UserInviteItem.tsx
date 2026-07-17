@@ -34,7 +34,7 @@ function UserInviteItemComponent({
 }: Props) {
     const navigate = useNavigate();
     const { modalStore } = useStore();
-    const userItemInfo = userItemToDisplay.user;
+    const userItemInfo = userItemToDisplay;
     const { closeModal } = modalStore;
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [decisionMade, setDecisionMade] = useState<"accept" | "deny" | undefined>(undefined);
@@ -58,7 +58,7 @@ function UserInviteItemComponent({
         //         });
 
         setDecisionMade(undefined);
-    }, [filterKey, userItemToDisplay.user]);
+    }, [filterKey, userItemToDisplay]);
 
     const denyInvite = useCallback(async () => {
         setDecisionMade("deny");
@@ -79,7 +79,7 @@ function UserInviteItemComponent({
         //         })
 
         setDecisionMade(undefined);
-    }, [filterKey, userItemToDisplay.user])
+    }, [filterKey, userItemToDisplay])
 
     const navigateToUser = () => navigate(`users/${userItemInfo.username}`);
     
@@ -94,7 +94,7 @@ function UserInviteItemComponent({
                 <div className="flex flex-col justify-self-stretch grow justify-start h-full space-x-3 cursor-pointer">
                     <div className="flex justify-items-start items-end align-items-end space-x-2">
                         <OptimizedImage
-                            src={userItemInfo.avatar}
+                            src={userItemInfo.avatar ?? ""}
                             alt={userItemInfo.username}
                             onClick={(e) => stopPropagationOnClick(e, navigateToUser)}
                         />

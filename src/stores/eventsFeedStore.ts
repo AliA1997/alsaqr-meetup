@@ -1,8 +1,9 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 import { store } from ".";
 import { EventRecord, UpsertEventRequest } from "@models/event";
+import LocalStorage from "@utils/localStorage";
 
 export default class EventsFeedStore {
 
@@ -40,7 +41,16 @@ export default class EventsFeedStore {
 
     eventToViewId: string | undefined;
     setEventToViewId = (val: string | undefined) => {
+        if(!store.commonStore.localStorage)
+            store.commonStore.localStorage = new LocalStorage();
+
+        if(val){
+            store.commonStore.localStorage.setEventToViewId(val);
+        } else {
+            store.commonStore.localStorage.clearEventToViewId();
+        }
         this.eventToViewId = val;
+
     }
     setPagingParams = (pagingParams: PagingParams) => {
         this.pagingParams = pagingParams;
@@ -141,7 +151,7 @@ export default class EventsFeedStore {
             runInAction(() => {
                 const event = this.eventRegistry.get(eventId);
                 if (event) {
-                    event.userAttendanceStatus = 'attending';
+                    event.userAttendeeStatus = 'attending';
                     this.setEvent(eventId, event);
                 }
             });
@@ -150,14 +160,14 @@ export default class EventsFeedStore {
         }
     }
 
-    leaveEvent = async (eventId: string, userId: string) => {
+    leaveEvent = async (eventId: string) => {
         this.setLoadingJoinLeave(true);
         try {
-            await agent.eventsApiClient.leaveEvent(eventId, userId);
+            await agent.eventsApiClient.leaveEvent(eventId);
             runInAction(() => {
                 const event = this.eventRegistry.get(eventId);
                 if (event) {
-                    event.userAttendanceStatus = 'not_attending';
+                    event.userAttendeeStatus = 'not_attending';
                     this.setEvent(eventId, event);
                 }
             });
@@ -166,4 +176,9 @@ export default class EventsFeedStore {
         }
     }
 
+
+
+    get eventDetailsId() {
+        return this.eventToViewId ?? store.commonStore.localStorage?.getEventToView();
+    }
 }

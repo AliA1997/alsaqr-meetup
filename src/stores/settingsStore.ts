@@ -18,7 +18,6 @@ export default class SettingsStore {
     };
 
     setCurrentTabIdx = (val: SettingsTabs) => {
-        debugger;
         this.currentTabIdx = val;
     }
 

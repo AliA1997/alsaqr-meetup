@@ -10,11 +10,14 @@ import {UserItemToDisplay } from "@typings";
 import {
     stopPropagationOnClick,
 } from "@utils/index";
-import { FilterKeys, useStore } from "@stores/index";
+import { useStore } from "@stores/index";
 import { LoginModal } from "@common/AuthModals";
 import { shortenText } from "@utils/index";
 import { MAX_BIO_LENGTH_FEED } from "@utils/constants";
 import { AddOrFollowButton } from "@common/IconButtons";
+import { OptimizedImage } from "@common/Image";
+import { FilterKeys } from '@enums';
+
 
 interface Props {
     filterKey?: FilterKeys;
@@ -40,7 +43,7 @@ function UserItemComponent({
     const { modalStore } = useStore();
     const { showModal, closeModal } = modalStore;
 
-    const userItemInfo = userItemToDisplay.user;
+    const userItemInfo = userItemToDisplay;
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
     // For cases such as adding users to communities or lists.
     const [isAdded, setIsAdded] = useState<boolean>(false);
@@ -65,7 +68,7 @@ function UserItemComponent({
         if (loggedInUserId) {
             // alert(JSON)
             const alreadyFollowedOrAdded = usersAlreadyFollowedOrAddedIds?.some((userById: string) => userById == userItemInfo.id) ?? false;
-            console.log(JSON.stringify(usersAlreadyFollowedOrAddedIds))
+
             if (filterKey === FilterKeys.SearchUsers) {
                 initiallyBooleanValues.current.added = alreadyFollowedOrAdded;
                 setIsAdded(alreadyFollowedOrAdded);
@@ -90,7 +93,6 @@ function UserItemComponent({
         try {
             await checkUserIsLoggedInBeforeUpdatingUserItem(async () => {
                 setIsAdded(!isAdded);
-                debugger;
                 onAddOrFollow!(userItemToDisplay);
             });
         } catch {
@@ -114,7 +116,7 @@ function UserItemComponent({
         <>
             <div
                 className={
-                    `flex relative space-x-3 border-y border-gray-100 p-5 dark:border-gray-800 
+                    `flex relative space-x-3 border-y border-gray-100 p-5 dark:border-gray-800
                     rounded-sm w-full h-[7em]
                 `}
             >
@@ -127,13 +129,12 @@ function UserItemComponent({
                      onIsAlreadyFollowing={onIsAlreadyFollowing}
                     />
                 )}
- 
-                {/* <div className="absolute m-0 inset-0"></div> */}
+
                 <div className="flex flex-col justify-self-stretch grow justify-start h-full space-x-3 cursor-pointer">
-                    <div className="flex justify-items-start items-end align-items-end space-x-2">
-                        <img
-                            className="h-10 w-10 rounded-full object-cover"
-                            src={userItemInfo.avatar}
+                    <div className="flex justify-items-start items-end align-items-end space-x-2 text-gray-900 dark:text-gray-50">
+                        <OptimizedImage
+                            classNames="h-10 w-10 rounded-full object-cover"
+                            src={userItemInfo.avatar ?? ''}
                             alt={userItemInfo.username}
                             onClick={(e) => stopPropagationOnClick(e, navigateToUser)}
                         />
@@ -146,10 +147,10 @@ function UserItemComponent({
                             </p>
                             <div className='flex item-center justify-items-start space-x-3'>
                                 <p className='italic text-gray-400 text-sm'>
-                                    {(userItemToDisplay.following ?? []).length} Following
+                                    {userItemToDisplay.followingCount} Following
                                 </p>
                                 <p className='italic text-gray-400 text-sm'>
-                                    {(userItemToDisplay.followers ?? []).length} Followers
+                                    {userItemToDisplay.followerCount} Followers
                                 </p>
                             </div>
 
@@ -162,43 +163,3 @@ function UserItemComponent({
 }
 
 export default UserItemComponent;
-
-
-
-            //    {canAddOrFollow && (
-            //         <div className='p-1'>
-
-            //             {isAdded || isFollowing
-            //                 ? (
-            //                     <button
-            //                         type='button'
-            //                         onClick={filterKey === FilterKeys.SearchUsers ? onIsAlreadyAdded : onIsAlreadyFollowing}
-            //                         className={`w-[2.5rem] h-[2.5rem] border rounded-full bg-[#55a8c2] p-2 hover:bg-[transparent]`}
-            //                     >
-            //                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            //                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-            //                         </svg>
-            //                     </button>
-            //                 )
-            //                 : (
-            //                     <button
-            //                         type='button'
-            //                         onClick={filterKey === FilterKeys.SearchUsers ? onIsAlreadyAdded : onIsAlreadyFollowing}
-            //                         className='w-[2.5rem] h-[2.5rem] border rounded-full p-2 hover:bg-[#55a8c2] cursor-pointer'
-            //                     >
-            //                         {filterKey === FilterKeys.SearchUsers
-            //                             ? (
-            //                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            //                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            //                                 </svg>
-            //                             )
-            //                             : (
-            //                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-            //                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            //                                 </svg>
-            //                             )}
-            //                     </button>
-            //                 )
-            //             }
-            //         </div>
-            //     )}

@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { SkeletonLoader } from "@common/CustomLoader";
-import { groupsApiClient } from "@utils/groupsApiClient";
-import { EventAttendee } from "@models/event";
+import { groupsApiClient } from "@utils/api/groupsApiClient";
+import { eventsApiClient } from "@utils/api/eventsApiClient";
+import { EventMember } from "@models/event";
 import { observer } from "mobx-react-lite";
 import TimeAgo from "react-timeago";
 import { convertDateToDisplay } from "@utils/index";
 import { TrashIcon } from "@heroicons/react/outline";
+import { OptimizedPostImage } from "@common/Image";
 
 interface EventMembersProps {
+  // The roster is fetched by slug; removals are keyed by id.
+  eventSlug: string;
   eventId: string;
   groupId: string;
   canManage: boolean;
@@ -15,20 +19,20 @@ interface EventMembersProps {
 }
 
 export default observer(function EventMembers({
+  eventSlug,
   eventId,
   canManage,
   onAttendeeRemoved,
 }: EventMembersProps) {
-  const [attendees, setAttendees] = useState<EventAttendee[]>([]);
+  const [attendees, setAttendees] = useState<EventMember[]>([]);
   const [loading, setLoading] = useState(false);
   const [removing, setRemoving] = useState<string | null>(null);
 
   const fetchAttendees = async () => {
     setLoading(true);
     try {
-      // const attendeesList = await eventsApiClient.getEventAttendees(eventId);
-      // setAttendees(attendeesList || []);
-      setAttendees([])
+      const { eventMembers } = await eventsApiClient.getEventMembers(eventSlug);
+      setAttendees(eventMembers || []);
     } catch (error) {
       console.error("Error fetching event attendees:", error);
     } finally {
@@ -38,7 +42,7 @@ export default observer(function EventMembers({
 
   useEffect(() => {
     fetchAttendees();
-  }, [eventId]);
+  }, [eventSlug]);
 
   const handleRemoveAttendee = async (userId: string) => {
     if (!window.confirm("Are you sure you want to remove this attendee?")) {
@@ -84,25 +88,30 @@ export default observer(function EventMembers({
           >
             <div className="flex-1">
               <div className="flex items-center gap-3">
-                {attendee.avatar ? (
-                  <img
-                    src={attendee.avatar}
-                    alt={attendee.username}
-                    className="w-10 h-10 rounded-full object-cover"
+                
+                  <OptimizedPostImage
+                    src={attendee.avatar ?? ""}
+                    alt={attendee.username ?? "Attendee"}
+                    classNames="w-10 h-10 rounded-full object-cover"
                   />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#55a8c2] to-[#2c5f7c] flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">
-                      {attendee.username[0]?.toUpperCase()}
-                    </span>
-                  </div>
-                )}
                 <div>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {attendee.username}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {attendee.email}
+                  {/* <div className="flex items-center gap-2">
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {attendee.username ?? "Member"}
+                    </p>
+                    {attendee.isLocalGuide && (
+                      <TagOrLabel
+                        testId="localguidetag"
+                        color="userGradient"
+                        size="sm"
+                        rounded
+                      >
+                        Local Guide
+                      </TagOrLabel>
+                    )}
+                  </div> */}
+                  <p className="text-sm text-gray-500 dark:text-gray-400 bg-red-500">
+                    {attendee.hobbies.join(", ")}
                   </p>
                 </div>
               </div>

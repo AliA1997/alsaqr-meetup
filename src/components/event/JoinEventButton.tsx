@@ -17,14 +17,13 @@ export default observer(function JoinEventButton({
   onAttendanceChange,
   disabled = false,
 }: JoinEventButtonProps) {
-  const { eventsFeedStore, authStore } = useStore();
-  const { currentSessionUser } = authStore;
+  const { eventsFeedStore } = useStore();
   const { loadingJoinLeave } = eventsFeedStore;
 
   const handleAttendanceToggle = async () => {
     try {
       if (isAttending) {
-        await eventsFeedStore.leaveEvent(eventId, currentSessionUser?.id ?? "");
+        await eventsFeedStore.leaveEvent(eventId);
       } else {
         await eventsFeedStore.joinEvent(eventId);
       }
@@ -38,13 +37,13 @@ export default observer(function JoinEventButton({
     <InfoButton
       disabled={disabled || loadingJoinLeave}
       onClick={handleAttendanceToggle}
-      classNames="px-3 py-2 cursor-pointer"
+      classNames="px-3 py-2 cursor-pointer mx-auto rounded-full border"
     >
       {loadingJoinLeave ? (
         <ButtonLoader />
       ) : (
         <div className={`
-          flex items-center gap-2
+          flex items-center gap-2 h-full w-full justify-between-center
           ${isAttending ? 'hover:text-red-400' : 'hover:text-[#55a8c2]'}
           transition-colors duration-200
         `}>

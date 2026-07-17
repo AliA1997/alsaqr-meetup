@@ -1,7 +1,7 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
-import { PostToDisplay,UserItemToDisplay } from "@typings";
+import { UserItemToDisplay } from "@typings";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 
 export default class SearchStore {
 
@@ -37,7 +37,6 @@ export default class SearchStore {
     searchedPostsPagination: Pagination | undefined = undefined;
 
     searchUsersRegistry: Map<string, UserItemToDisplay> = new Map<string, UserItemToDisplay>();
-    searchPostsRegistry: Map<string, PostToDisplay> = new Map<string, PostToDisplay>();
 
     setSearchedUsersPagingParams = (pagingParams: PagingParams) => {
         this.searchedUsersPagingParams = pagingParams;
@@ -45,26 +44,12 @@ export default class SearchStore {
     setSearchedUsersPagination = (value: Pagination | undefined) => {
         this.searchedUsersPagination = value;
     }
-    setSearchedPostsPagingParams = (pagingParams: PagingParams) => {
-        this.searchedPostsPagingParams = pagingParams;
-    }
-    setSearchedPostsPagination = (value: Pagination | undefined) => {
-        this.searchedPostsPagination = value;
-    }
-
 
     setSearchedUser = (userId: string, user: UserItemToDisplay) => {
         this.searchUsersRegistry.set(userId, user);
     }
-    setSearchedPost = (postId: string, post: PostToDisplay) => {
-        this.searchPostsRegistry.set(postId, post);
-    }
-
     setSearchUsersLoadingInitial = (value: boolean) => {
         this.searchUsersLoadingInitial = value;
-    }
-    setSearchPostsLoadingInitial = (value: boolean) => {
-        this.searchPostsLoadingInitial = value;
     }
    
     get searchUsersAxiosParams() {
@@ -75,70 +60,31 @@ export default class SearchStore {
 
         return params;
     }
-    get searchPostsAxiosParams() {
-        const params = new URLSearchParams();
-        params.append("currentPage", this.searchedPostsPagingParams.currentPage.toString());
-        params.append("itemsPerPage", this.searchedPostsPagingParams.itemsPerPage.toString());
-        this.searchedPostsPredicate.forEach((value, key) => params.append(key, value));
 
-        return params;
-    }
-
-    loadSearchedUsers = async (userId: string) => {
+    loadSearchedUsers = async () => {
 
         this.setSearchUsersLoadingInitial(true);
 
         try {
             if(this.searchedUsersPagingParams.currentPage === 1)
                 this.searchUsersRegistry.clear();
-            
-            console.log('userId:', userId);
-            const { result } = await agent.userApiClient.getUsersToAdd(userId, this.searchUsersAxiosParams) ?? [];
 
-            console.log('result:', result);
-            debugger;
+            const { items, pagination } = await agent.userApiClient.getUsersToAdd(this.searchUsersAxiosParams) ?? [];
+
             runInAction(() => {
-                result.data.forEach((userItem: UserItemToDisplay) => {
-                    this.setSearchedUser(userItem.user.id, userItem);
+                items.forEach((userItem: UserItemToDisplay) => {
+                    this.setSearchedUser(userItem.id, userItem);
                 });
             });
 
-            this.setSearchedUsersPagination(result.pagination);
+            this.setSearchedUsersPagination(pagination);
         } finally {
             this.setSearchUsersLoadingInitial(false);
         }
 
     }
-    loadSearchedPosts = async (userId: string) => {
-
-        this.setSearchPostsLoadingInitial(true);
-
-        try {
-            if(this.searchedPostsPagingParams.currentPage === 1)
-                this.searchUsersRegistry.clear();
-            
-            console.log('userId:', userId);
-            // const { result } = await agent.postApiClient.getPostsToAdd(userId, this.searchPostsAxiosParams) ?? [];
-
-            // console.log('result:', result);
-            // debugger;
-            // runInAction(() => {
-            //     result.data.forEach((postItem: PostToDisplay) => {
-            //         this.setSearchedPost(postItem.post.id, postItem);
-            //     });
-            // });
-
-            // this.setSearchedPostsPagination(result.pagination);
-        } finally {
-            this.setSearchPostsLoadingInitial(false);
-        }
-
-    }
-
+ 
     get searchedUsers() {
         return Array.from(this.searchUsersRegistry.values());
-    }
-    get searchedPosts() {
-        return Array.from(this.searchPostsRegistry.values());
     }
 }

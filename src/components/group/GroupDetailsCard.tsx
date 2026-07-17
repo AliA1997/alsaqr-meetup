@@ -101,8 +101,9 @@ export default observer(function GroupDetailsCard({
       </section>
       {isFounder && (
         <section className="mt-6 px-4">
-          <GroupMembers 
-            groupId={group.id} 
+          <GroupMembers
+            groupSlug={group.slug}
+            groupId={group.id}
             canManage={isFounder}
             onMemberRemoved={() => {
               onRefresh?.();

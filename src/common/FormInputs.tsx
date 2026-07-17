@@ -216,7 +216,6 @@ export function FormImageInput({ name, label, required }: FormFieldProps) {
         const file = e.target.files?.[0];
         // Reset the input value so picking the same file again still fires onChange.
         e.target.value = "";
-        debugger;
         if (!file) return;
         const reader = new FileReader();
         reader.onload = () => {

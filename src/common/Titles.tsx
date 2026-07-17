@@ -19,6 +19,7 @@ interface TagOrLabelProps extends React.ButtonHTMLAttributes<HTMLSpanElement> {
     size?: 'sm' | 'md' | 'lg';
     rounded?: boolean;
     outlined?: boolean;
+    testId?: string;
 }
 
 export function TagOrLabel({
@@ -28,6 +29,7 @@ export function TagOrLabel({
     rounded = false,
     outlined = false,
     className = '',
+    testId,
     ...props
 }: TagOrLabelProps) {
     // Base classes
@@ -134,7 +136,7 @@ export function TagOrLabel({
     ].join(' ');
 
     return (
-        <span className={classes} {...props}>
+        <span data-testid={testId ?? "tagorlabel"} className={classes} {...props}>
             {children}
         </span>
     );

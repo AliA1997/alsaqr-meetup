@@ -23,7 +23,7 @@ export default observer(function EventDetailsCard({
   
   const isFounder = !!authStore.currentSessionUser && authStore.currentSessionUser.id === event.groupFounderId;
   const isLoggedIn = !!authStore.currentSessionUser;
-  const isAttending = event.userAttendanceStatus === 'attending';
+  const isAttending = event.userAttendeeStatus === 'attending';
 
   const handleAttendanceChange = () => {
     onRefresh?.();
@@ -38,7 +38,7 @@ export default observer(function EventDetailsCard({
         <div className="flex w-full flex-col space-y-4 px-0 py-2 md:w-1/2 md:px-4 lg:px-12">
           <p className="p-2 text-[2rem] font-bold md:text-[2.5rem]">{event.name}</p>
           {isAttending && (
-            <div className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-full text-sm font-medium w-fit">
+            <div className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-full text-sm font-medium w-fit mx-auto">
               ✓ You are attending this event
             </div>
           )}
@@ -85,8 +85,9 @@ export default observer(function EventDetailsCard({
       </section>
       {isFounder && (
         <section className="mt-6 px-4">
-          <EventMembers 
-            eventId={event.id} 
+          <EventMembers
+            eventSlug={event.slug}
+            eventId={event.id}
             groupId={event.groupId}
             canManage={isFounder}
             onAttendeeRemoved={() => {

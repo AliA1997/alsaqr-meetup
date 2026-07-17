@@ -1,4 +1,4 @@
-import { PostToDisplay, User } from "typings";
+import { User } from "typings";
 
 export interface Params {
   currentPage?: number;
@@ -46,7 +46,7 @@ export function stopPropagationOnClick<T>(
   callback: Function
 ) {
   e.stopPropagation();
-  callback();
+  callback(e);
 }
 
 export const nonRoutableTitles = ["Sign In", "Sign Out", "More"];
@@ -62,16 +62,6 @@ export const defaultSearchParams = {
   search_term: "",
 };
 
-export const isPostSearchAMatch = (
-  pst: PostToDisplay,
-  searchQry: string
-): boolean => {
-  return (
-    pst.post.text.includes(searchQry) ||
-    pst.post.id === searchQry ||
-    pst.commenters.some((c) => c.username === searchQry)
-  );
-};
 
 export function getPercievedNumberOfRecord<T>(
   stateBool: boolean,

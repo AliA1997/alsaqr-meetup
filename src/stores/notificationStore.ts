@@ -1,7 +1,7 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { NotificationToDisplay } from "@typings";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 
 export default class NotificationStore {
 

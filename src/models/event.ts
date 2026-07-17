@@ -1,3 +1,18 @@
+// Mirrors EventMemberDto (AlSaqr.Domain.Meetup), the read model behind
+// vw_event_members. Output only — never send this back as a request body.
+export interface EventMember {
+    eventId: string;
+    // Absent for events that aren't owned by a group.
+    groupId?: string;
+    userId: string;
+    username?: string;
+    avatar?: string;
+    hobbies: string[];
+    isEventOrganizer: boolean;
+    isLocalGuide: boolean;
+    joinedAt: string; // ISO timestamp
+}
+
 export interface EventAttendee {
     userId: string;
     username: string;
@@ -22,7 +37,7 @@ export interface EventRecord {
     // by this user (event ownership is inherited from the group founder).
     groupFounderId?: string;
     // Current logged-in user's attendance status
-    userAttendanceStatus?: 'attending' | 'not_attending';
+    userAttendeeStatus?: 'attending' | 'not_attending';
 }
 
 // Create/update payload. Only `name` and `description` are required; the rest are

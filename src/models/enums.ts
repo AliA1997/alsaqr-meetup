@@ -50,3 +50,17 @@ export enum HowSimilarKeys {
   Nearby = 6,
   WalkingDistance = 7
 }
+
+// Mobx Store Enum
+export enum FilterKeys {
+  Search = 'search',
+  SearchUsers = 'search-users',
+  SearchPosts = 'search-posts',
+  MyBookmarks = "my-bookmarks",
+  Explore = 'explore',
+  Normal = 'normal',
+  Lists = "lists",
+  Community = "community",
+  CommunityDiscussion = "community-discussion",
+  Register = "register"
+}

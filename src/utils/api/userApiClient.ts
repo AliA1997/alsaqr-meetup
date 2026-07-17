@@ -9,7 +9,17 @@ export const userApiClient = {
         axios.post(`/api/session/check `, { values: { email } }, { headers: {
             "Content-Type": "application/json"
         }}).then(axiosResponseBody),
-    
+        
+    // Web3 wallet auth mirrors the oauth flow: signin upserts the wallet user,
+    // check returns the session user keyed by wallet address instead of email.
+    web3SessionSignin: (web3Address: string) =>
+        axios.post(`/api/auth/signin`, { values: { web3_address: web3Address, provider: "web3" } }, { headers: {
+            "Content-Type": "application/json"
+        }}).then(axiosResponseBody),
+    web3SessionCheck: (web3Address: string) =>
+        axios.post(`/api/Session/check `, { values: { web3_address: web3Address, email: "" } }, { headers: {
+            "Content-Type": "application/json"
+        }}).then(axiosResponseBody),
     getLocalGuides: (params: URLSearchParams) => 
         axios.get(`/api/LocalGuides`, { params }).then(axiosResponseBody),
 
@@ -20,9 +30,8 @@ export const userApiClient = {
         axios.get(`/api/LocalGuideDetails/${localGuideId}/nearby`, { params }).then(axiosResponseBody),
     getUserProfile: (username: string) => 
         axios.get(`/api/profile/${username}`).then(axiosResponseBody),
-
-    getUsersToAdd: (userId: string, params: URLSearchParams) =>
-        axios.get(`/api/users/${userId}/usersToAdd`, { params }).then(axiosResponseBody),
+    getUsersToAdd: (params: URLSearchParams) =>
+        axios.get(`/api/Users/usersToAdd`, { params }).then(axiosResponseBody),
     getUserProfilePosts: (username: string, params: URLSearchParams) =>
         axios.get(`/api/profile/${username}/posts`, { params }).then(axiosResponseBody),
 

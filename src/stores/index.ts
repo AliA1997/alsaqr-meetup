@@ -4,7 +4,6 @@ import ModalStore from './modalStore';
 import NotificationStore from './notificationStore';
 import UserStore from './userStore';
 import MessageStore from './messageStore';
-import CommentFeedStore from './commentFeedStore';
 import SettingsStore from './settingsStore';
 import SearchStore from './searchStore';
 import GroupsFeedStore from './groupFeedStore';
@@ -17,7 +16,6 @@ import AuthStore from './authStore';
 
 interface Store {
     authStore: AuthStore;
-    commentFeedStore: CommentFeedStore;
     commonStore: CommonStore;
     groupsFeedStore: GroupsFeedStore;
     myGroupsFeedStore: MyGroupsFeedStore;
@@ -51,7 +49,6 @@ export enum FilterKeys {
 export const store: Store = {
     authStore: new AuthStore(),
     commonStore: new CommonStore(),
-    commentFeedStore: new CommentFeedStore(),
     groupsFeedStore: new GroupsFeedStore(),
     myGroupsFeedStore: new MyGroupsFeedStore(),
     eventsFeedStore: new EventsFeedStore(),

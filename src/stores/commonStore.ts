@@ -4,13 +4,15 @@ import { ServerError } from "typings";
 import { UserIpInfo } from "@models/common";
 import { City } from "@models/city";
 import { Topic } from "@models/topic";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 import { store } from ".";
+import LocalStorage from "@utils/localStorage";
 
 export default class CommonStore {
   error: ServerError | null = null;
   token: string | null = new Auth().getToken();
   userIpInfo: UserIpInfo | undefined = undefined;
+  localStorage: LocalStorage | undefined = undefined;
   appLoaded = false;
 
   alertMessage: string[] = [];
@@ -31,6 +33,7 @@ export default class CommonStore {
     reaction(
       () => this.token,
       (token) => {
+        this.localStorage = new LocalStorage();
         if (token) {
           new Auth().setToken(token);
         } else {

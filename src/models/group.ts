@@ -1,9 +1,15 @@
 
+// Mirrors GroupMemberDto (AlSaqr.Domain.Meetup), the read model behind
+// vw_group_members. Output only — never send this back as a request body.
 export interface GroupMember {
+    id: string;
+    groupId: string;
     userId: string;
-    username: string;
-    email: string;
+    username?: string;
     avatar?: string;
+    hobbies: string[];
+    isGroupOrganizer: boolean;
+    isLocalGuide: boolean;
     joinedAt: string; // ISO timestamp
 }
 

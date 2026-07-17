@@ -6,7 +6,7 @@ import { EntityMarker } from "@models/common";
 import { TypeOfMarquee } from "@models/enums";
 import type { LocalGuideDetailsRecord, LocalGuideRecord } from "@models/localGuide";
 import { useStore } from "@stores/index";
-import { userApiClient } from "@utils/userApiClient";
+import { userApiClient } from "@utils/api/userApiClient";
 import { observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";

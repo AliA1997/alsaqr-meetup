@@ -1,6 +1,6 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 import { store } from ".";
 import { EventRecord } from "@models/event";
 
@@ -29,11 +29,8 @@ export default class MyEventsFeedStore {
     pagination: Pagination | undefined = undefined;
 
     myEventRegistry: Map<string, EventRecord> = new Map<string, EventRecord>();
+    
 
-    myEventToViewId: string | undefined;
-    setMyEventToViewId = (val: string) => {
-        this.myEventToViewId = val;
-    }
     setPagingParams = (pagingParams: PagingParams) => {
         this.pagingParams = pagingParams;
     }
@@ -71,7 +68,9 @@ export default class MyEventsFeedStore {
     loadMyEvents = async () => {
 
         this.setLoadingInitial(true);
-        this.myEventRegistry.clear();
+        // Only the first page replaces the registry; later pages append to it.
+        if (this.pagingParams.currentPage === 1)
+            this.myEventRegistry.clear();
         try {
             const { items, pagination } = await agent.eventsApiClient.getMyEvents(this.axiosParams);
 

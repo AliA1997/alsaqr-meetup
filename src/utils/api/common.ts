@@ -1,10 +1,9 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
-import { PaginatedResult } from '../models/common';
-import Auth from './auth';
+import { PaginatedResult } from '../../models/common';
+import Auth from '../auth';
 import { notificationApiClient } from "./notificationApiClient";
 import { userApiClient } from "./userApiClient";
 import { messageApiClient } from "./messageApiClient";
-import { commentApiClient } from "./commentApiClient";
 import { locationApiClient } from './locationApiClient';
 import { groupsApiClient } from './groupsApiClient';
 import { eventsApiClient } from './eventsApiClient';
@@ -125,7 +124,6 @@ axios.interceptors.response.use(
 
 const agent = {
   citiesApiClient,
-  commentApiClient,
   groupsApiClient,
   eventsApiClient,
   locationApiClient,
@@ -134,24 +132,29 @@ const agent = {
   userApiClient
 };
 
+// Leading-edge debounce: the first call runs immediately, then further calls are
+// swallowed until `delay` ms have passed without one. `timeoutId` has to live in the
+// returned closure — a plain `leadingDebounce(fn, delay)` call cannot debounce, because
+// the timer would be re-created (and always null) on every invocation.
 export function leadingDebounce<F extends (...args: any[]) => any>(
   func: F,
   delay: number
 ) {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  // alert(timeoutId)
-  if (!timeoutId) {
-    func();
-  }
+  return (...args: Parameters<F>) => {
+    if (timeoutId === null) {
+      func(...args);
+    } else {
+      clearTimeout(timeoutId);
+    }
 
-  if (timeoutId) {
-    clearTimeout(timeoutId);
-  }
-
-  timeoutId = setTimeout(() => {
-    timeoutId = null;
-  }, delay);
+    // Every call restarts the cooldown, so the leading edge only fires again once the
+    // caller has been quiet for the full delay.
+    timeoutId = setTimeout(() => {
+      timeoutId = null;
+    }, delay);
+  };
 }
 
 export default agent;

@@ -17,14 +17,13 @@ export default observer(function JoinGroupButton({
   onJoinSuccess,
   disabled = false,
 }: JoinGroupButtonProps) {
-  const { groupsFeedStore, authStore } = useStore();
-  const { currentSessionUser } = authStore;
+  const { groupsFeedStore } = useStore();
   const { loadingJoinLeave } = groupsFeedStore;
 
   const handleJoinLeave = async () => {
     try {
       if (isJoined) {
-        await groupsFeedStore.leaveGroup(groupId, currentSessionUser?.id ?? "");
+        await groupsFeedStore.leaveGroup(groupId);
       } else {
         await groupsFeedStore.joinGroup(groupId);
       }

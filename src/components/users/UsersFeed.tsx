@@ -60,7 +60,7 @@ const UsersFeed = observer(({ title, loggedInUserId, filterKey, usersAlreadyAdde
   }, []);
 
   const loadUsers = async () => {
-    await searchStore.loadSearchedUsers(loggedInUserId ?? "");
+    await searchStore.loadSearchedUsers();
   }
 
   async function getUsers() {
@@ -180,7 +180,7 @@ const UsersFeed = observer(({ title, loggedInUserId, filterKey, usersAlreadyAdde
               <>
                 {(loadedUsers ?? []).map((userRec: UserItemToDisplay, userKey: number) => (
                   <UserItemComponent
-                    key={userRec.user.id ?? userKey}
+                    key={userRec.id ?? userKey}
                     loggedInUserId={loggedInUserId}
                     filterKey={filterKey}
                     userItemToDisplay={userRec}

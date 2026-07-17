@@ -6,7 +6,7 @@ import { GroupRecord, UpsertGroupRequest } from "@models/group";
 import { FormTextInput, FormTextArea, FormAutocompleteInput, FormImageInput, SelectOption } from "@common/FormInputs";
 import { ButtonLoader } from "@common/CustomLoader";
 import TopicAutocomplete from "./TopicAutocomplete";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 
 interface UpsertGroupFormProps {
     group?: GroupRecord;

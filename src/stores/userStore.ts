@@ -1,11 +1,10 @@
-import agent from '@utils/common';
+import agent from '@utils/api/common';
 import { makeAutoObservable, action, runInAction } from 'mobx';
 import { PagingParams } from '@models/common';
-import { ProfileUser, UserProfileDashboardPosts } from 'typings';
+import { ProfileUser } from 'typings';
 
 export default class UserStore {
     currentUserProfile: ProfileUser | undefined = undefined;
-    currentUserProfilePosts: UserProfileDashboardPosts | undefined = undefined;
     loadingInitial: boolean = false;
     loadingPosts: boolean = false;
     loadingFollow: boolean = false;
@@ -17,9 +16,6 @@ export default class UserStore {
     setCurrentUserProfile = (userProfileValue: ProfileUser | undefined) => {
         this.currentUserProfile = userProfileValue;
     }
-    setCurrentUserProfilePosts = (userProfilePostsValue: UserProfileDashboardPosts | undefined) => {
-        this.currentUserProfilePosts = userProfilePostsValue;
-    };
     setLoadingInitial = (val: boolean) => {
         this.loadingInitial = val;
     };
@@ -55,20 +51,6 @@ export default class UserStore {
         }
         return profile;
     }
-    loadProfilePosts = async (username: string) => {
-
-        this.setLoadingPosts(true);
-        try {
-            const profilePosts = await agent.userApiClient.getUserProfilePosts(username, this.axiosParams);
-
-            runInAction(() => {
-                this.setCurrentUserProfilePosts(profilePosts);
-            });
-        } finally {
-            this.setLoadingPosts(false);
-        }
-    }
-
     navigateBackToHome = action(() => {
         window.location.href = `${import.meta.env.VITE_PUBLIC_BASE_URL}/`;
     });

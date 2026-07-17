@@ -1,38 +1,4 @@
 
-export enum TypeOfFeed {
-  Feed = "feed",
-  Explore = "explore",
-  Search = "search"
-}
-
-export enum NotificationType {
-  Normal = "normal",
-  Mentioned = "mentioned",
-  Verified = "verified",
-  YourAccount = "your_account",
-  FollowUser = "follow_user",
-  BookmarkedPost = 'bookmarked_post',
-  LikedPost = 'liked_post',
-  RePostedPost = 'reposted_post',
-  CommentedPost = 'commented_post',
-  NewList = "new_list",
-  NewCommunity = "new_community",
-  UnjoinedCommunity = "user_unjoined",
-  JoinedCommunity = "user_joined",
-  RequestJoinCommunity = "user_request_join",
-  UnjoinedCommunityDiscussion = "user_unjoined_discussion",
-  JoinedCommunityDiscussion = "user_joined_discussion",
-  RequestJoinCommunityDiscussion = "user_request_join_discussion",
-  NewPost = "new_post",
-}
-
-export enum MessageType {
-  All = "All",
-  Sent = "Sent",
-  Direct = "Direct"
-}
-
-
 export type CommonRecordBody = {
   text: string;
   image?: string;
@@ -44,17 +10,44 @@ export type CommonRecordBody = {
 // followedUser - [:FOLLOWED] -> user
 // on unfollow -> delete FOLLOW_USER and FOLLOWED relationship
 export interface ProfileUser {
-  user: User;
+  userId: string;
+  username: string;
+  firstName: string;
+  lastName?: string;
+  avatar?: string;
+  bgThumbnail?: string;
+  bannerImage?: string;
+  bio?: string;
+  dateOfBirth?: Date;
+  createdAt: Date;
+  updatedAt?: Date;
   bookmarks: string[];
-  following?: User[];
-  followers?: User[];
+  bookmarkCount: number;
+  following?: object[];
+  followingCount: number;
+  followers?: object[];
+  followerCount: number;
 }
 
 
 export interface UserItemToDisplay {
-  user: User;
-  following?: User[];
-  followers?: User[];
+  id: string;
+  username: string;
+  avatar?: string;
+  bgThumbnail?: string;
+  bio?: string;
+  firstName?: string;
+  lastName?: string;
+  bannerImage?: string;
+  countryOfOrigin?: string;
+  preferredMadhab?: string;
+  hobbies: string[];
+  favoriteQuranReciters: string[];
+  favoriteIslamicScholars: string[];
+  islamicStudyTopics: string[];
+  followingCount: number;
+  followerCount: number;
+  totalItems: number;
 }
 
 export interface UserRegisterFormDto extends UserRegisterForm {
@@ -62,6 +55,7 @@ export interface UserRegisterFormDto extends UserRegisterForm {
 }
 
 export interface UserRegisterForm extends UserInfo {
+  walletAddress?: string;
   firstName: string;
   lastName: string;
   dateOfBirth?: Date;
@@ -74,6 +68,9 @@ export interface UserRegisterForm extends UserInfo {
 
 export interface User extends UserInfo {
   id: string;
+  web3_address?: string;
+  web3Address?: string;
+  isWeb3?: boolean;
   createdAt: Date;
   updatedAt: Date;
   firstName?: string;
@@ -82,16 +79,32 @@ export interface User extends UserInfo {
   geoId?: string;
   maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
   hobbies?: string[];
-  religion?: "Christian" | "Muslim" | "Atheist" | "Agnostic" | "Jew" | "Prefer Not To Disclose";
-  preferredMadhab?: 'Hanafi' | "Shafi'i" | 'Maliki' | 'Hanbali' | "Salafi" | "Prefer Not To Disclose";
+  religion?: string;
+  preferredMadhab?: string;
   frequentMasjid?: string;
   favoriteQuranReciters?: string[];
   favoriteIslamicScholars?: string[];
   islamicStudyTopics?: string[];
-  followingUsers: string[];
-  followedByUsers: string[];
+  following: {
+    avatar?: string;
+    bio?: string;
+    username?: string;
+    userId?: string;
+  }[];
+  followingCount: number;
+  followers: {
+    avatar?: string;
+    bio?: string;
+    username?: string;
+    userId?: string;
+  }[];
+  followerCount: number;
+  bookmarks: string[];
+  reposts: string[];
+  likedPosts: string[];
   isCompleted: boolean;
   verified: boolean;
+  subscriptionId?: string;
 }
 
 export type UserInfo = {
@@ -106,27 +119,8 @@ export type UserInfo = {
   personalInterests?: PersonalInterests;
 };
 
-export interface UserProfileDashboardPosts {
-  userPosts: DashboardPostToDisplay[];
-  bookmarkedPosts: DashboardPostToDisplay[];
-  likedPosts: DashboardPostToDisplay[];
-  repostedPosts: DashboardPostToDisplay[];
-  repliedPosts: DashboardPostToDisplay[];
-  success: boolean;
-}
-
 export interface DashboardPostToDisplay extends PostToDisplay {
   type: string;
-}
-
-export interface PostToDisplay {
-  post: PostRecord,
-  username: string;
-  profileImg: string;
-  comments: Comment[],
-  commenters: User[],
-  reposters: User[],
-  likers: User[]
 }
 
 export interface SavedPostItem {
@@ -136,48 +130,26 @@ export interface SavedPostItem {
 }
 
 export interface PostRecord extends CommonRecordBody {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  _rev: string;
-  _type: "post";
-  blockTweet: boolean;
-  tags: string[];
-  likes?: string[];
-  userId?: string;
-}
-
-export interface CommentForm extends Comment {
-  commentToCommentOnId?: string;
-};
-
-export interface Comment extends CommonRecordBody {
-  id: string;
   postId: string;
-  userId: string;
-  image: string;
-  text: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CommentToDisplay extends Comment {
+  content: string;
+  postTags: string[];
+  postCreatedAt: string;
+  postUpdatedAt: string;
+  userId?: string;
   username: string;
-  profileImg: string;
-  comments: Comment[],
-  commenters: User[],
-  reposters: User[],
-  likers: User[]
+  profileImg?: string;
+  authorBio?: string;
+  postType?: string;
+  relatedPostId?: string | null;
+  postAvatar?: string | null;
+  postBannerImage?: string | null;
+  bannerImage?: string | null;
 }
-
-export enum  RelationshipType {
-  Joined = 'JOINED',
-  Invited = 'INVITED',
-  Founder = 'FOUNDER',
-  InviteRequested = 'INVITE_REQUESTED',
-  InviteRequestedForCommunityDiscussion = 'INVITE_REQUESTED_FOR_DISCUSSION',
-  None = 'NONE'
-};
+export interface PostUserInfoDto {
+  id: string;
+  username: string;
+  profileImg?: string;
+}
 
 export interface NotificationRecord extends CommonRecordBody {
   notificationId: string;
@@ -258,40 +230,3 @@ export interface MessageHistoryToDisplay {
   messageCount: any;
   lastMessageDate: any;
 }
-
-// New types based on the code snippets
-export interface PersonalInfo {
-  dateOfBirth?: string;
-  maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
-}
-
-export interface PersonalInterests {
-  hobbies?: string[];
-  preferredMadhab?: 'Hanafi' | "Shafi'i" | 'Maliki' | 'Hanbali' | "Salafi";
-  frequentMasjid?: string;
-  favoriteQuranReciters?: string[];
-  favoriteIslamicScholars?: string[];
-  islamicStudyTopics?: string[];
-}
-
-// Relationship types
-export interface PostedRelationship {
-  timestamp: string;
-}
-
-export interface CommentedRelationship {
-  timestamp: string;
-}
-export interface LikedPostParams {
-    statusId: string;
-    userId: string;
-    liked: boolean;
-}
-export interface LikedCommentParams extends LikedPostParams {};
-
-export interface RePostParams {
-    statusId: string;
-    userId: string;
-    reposted: boolean;
-}
-export interface RePostCommentParams extends RePostParams {};

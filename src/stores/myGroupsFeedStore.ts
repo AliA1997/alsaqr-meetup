@@ -1,6 +1,6 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 import { GroupRecord } from "@models/group";
 import { store } from ".";
 
@@ -29,10 +29,8 @@ export default class MyGroupsFeedStore {
     pagination: Pagination | undefined = undefined;
 
     myGroupRegistry: Map<string, GroupRecord> = new Map<string, GroupRecord>();
-    myGroupToViewId: string | undefined;
-    setMyGroupToViewId = (val: string) => {
-        this.myGroupToViewId = val;
-    }
+
+    
     setPagingParams = (pagingParams: PagingParams) => {
         this.pagingParams = pagingParams;
     }
@@ -70,7 +68,9 @@ export default class MyGroupsFeedStore {
     loadMyGroups = async () => {
         
         this.setLoadingInitial(true);
-        this.myGroupRegistry.clear();
+        // Only the first page replaces the registry; later pages append to it.
+        if (this.pagingParams.currentPage === 1)
+            this.myGroupRegistry.clear();
         try {
             const { items, pagination } = await agent.groupsApiClient.getMyGroups(this.axiosParams);
 

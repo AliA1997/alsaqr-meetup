@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { MessageFormDto, MessageHistoryToDisplay, MessageToDisplay, ProfileUser } from "@typings";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 
 export default class MessageStore {
     constructor() {

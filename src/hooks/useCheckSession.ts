@@ -3,7 +3,7 @@ import { supabase } from "@utils/supabase";
 import Auth from "@utils/auth";
 import { User } from "typings";
 import { useLocation } from "react-router";
-import { userApiClient } from "@utils/userApiClient";
+import { userApiClient } from "@utils/api/userApiClient";
 
 export function useCheckSession(setState: Function, sessionUser: User | undefined | null) {
   const { pathname } = useLocation();

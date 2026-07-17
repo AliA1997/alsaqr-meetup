@@ -1,6 +1,6 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 import { store } from ".";
 import { LocalGuideRecord, UpsertLocalGuideRequest } from "@models/localGuide";
 
@@ -80,7 +80,9 @@ export default class LocalGuidesFeedStore {
     loadLocalGuides = async () => {
         
         this.setLoadingInitial(true);
-        this.localGuidesRegistry.clear();
+        // Only the first page replaces the registry; later pages append to it.
+        if (this.pagingParams.currentPage === 1)
+            this.localGuidesRegistry.clear();
         try {
             const { items, pagination } = await agent.userApiClient.getLocalGuides(this.axiosParams);
 

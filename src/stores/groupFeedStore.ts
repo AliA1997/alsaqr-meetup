@@ -1,8 +1,9 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/common";
+import agent from "@utils/api/common";
 import { GroupRecord, UpsertGroupRequest } from "@models/group";
 import { store } from ".";
+import LocalStorage from "@utils/localStorage";
 
 export default class GroupsFeedStore {
 
@@ -39,6 +40,14 @@ export default class GroupsFeedStore {
     groupRegistry: Map<string, GroupRecord> = new Map<string, GroupRecord>();
     groupToViewId: string | undefined;
     setGroupToViewId = (val: string) => {
+        if(!store.commonStore.localStorage)
+            store.commonStore.localStorage = new LocalStorage();
+
+        if(val){
+            store.commonStore.localStorage.setGroupToViewId(val);
+        } else {
+            store.commonStore.localStorage.clearGroupToViewId();
+        }
         this.groupToViewId = val;
     }
     setPagingParams = (pagingParams: PagingParams) => {
@@ -80,7 +89,6 @@ export default class GroupsFeedStore {
 
         this.setLoadingInitial(true);
         try {
-            debugger;
             const { items, pagination } = await agent.groupsApiClient.getNearbyGroups(this.axiosParams);
 
             runInAction(() => {
@@ -147,10 +155,10 @@ export default class GroupsFeedStore {
         }
     }
 
-    leaveGroup = async (groupId: string, userId: string) => {
+    leaveGroup = async (groupId: string) => {
         this.setLoadingJoinLeave(true);
         try {
-            await agent.groupsApiClient.leaveGroup(groupId, userId);
+            await agent.groupsApiClient.leaveGroup(groupId);
             runInAction(() => {
                 const group = this.groupRegistry.get(groupId);
                 if (group) {
@@ -161,5 +169,10 @@ export default class GroupsFeedStore {
         } finally {
             this.setLoadingJoinLeave(false);
         }
+    }
+
+    
+    get groupDetailsId() {
+        return this.groupToViewId ?? store.commonStore.localStorage?.getGroupToView();
     }
 }

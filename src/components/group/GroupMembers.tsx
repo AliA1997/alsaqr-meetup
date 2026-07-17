@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SkeletonLoader } from "@common/CustomLoader";
-import { groupsApiClient } from "@utils/groupsApiClient";
+import { groupsApiClient } from "@utils/api/groupsApiClient";
 import { GroupMember } from "@models/group";
 import { observer } from "mobx-react-lite";
 import TimeAgo from "react-timeago";
@@ -8,12 +8,15 @@ import { convertDateToDisplay } from "@utils/index";
 import { TrashIcon } from "@heroicons/react/outline";
 
 interface GroupMembersProps {
+  // The roster is fetched by slug; removals are keyed by id.
+  groupSlug: string;
   groupId: string;
   canManage: boolean;
   onMemberRemoved?: () => void;
 }
 
 export default observer(function GroupMembers({
+  groupSlug,
   groupId,
   canManage,
   onMemberRemoved,
@@ -25,9 +28,8 @@ export default observer(function GroupMembers({
   const fetchMembers = async () => {
     setLoading(true);
     try {
-      // const membersList = await groupsApiClient.getGroupMembers(groupId);
-      // setMembers(membersList || []);
-      setMembers([]);
+      const { groupMembers } = await groupsApiClient.getGroupMembers(groupSlug);
+      setMembers(groupMembers || []);
     } catch (error) {
       console.error("Error fetching group members:", error);
     } finally {
@@ -37,7 +39,7 @@ export default observer(function GroupMembers({
 
   useEffect(() => {
     fetchMembers();
-  }, [groupId]);
+  }, [groupSlug]);
 
   const handleRemoveMember = async (userId: string) => {
     if (!window.confirm("Are you sure you want to remove this member?")) {
@@ -46,7 +48,7 @@ export default observer(function GroupMembers({
 
     setRemoving(userId);
     try {
-      await groupsApiClient.leaveGroup(groupId, userId);
+      await groupsApiClient.removeGroupMember(groupId, userId);
       setMembers(members.filter((m) => m.userId !== userId));
       onMemberRemoved?.();
     } catch (error) {
@@ -86,22 +88,22 @@ export default observer(function GroupMembers({
                 {member.avatar ? (
                   <img
                     src={member.avatar}
-                    alt={member.username}
+                    alt={member.username ?? "Group member"}
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#55a8c2] to-[#2c5f7c] flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
-                      {member.username[0]?.toUpperCase()}
+                      {member.username?.[0]?.toUpperCase()}
                     </span>
                   </div>
                 )}
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {member.username}
+                    {member.username ?? "Former member"}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {member.email}
+                    {member.hobbies.join(", ")}
                   </p>
                 </div>
               </div>

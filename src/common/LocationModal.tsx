@@ -3,7 +3,7 @@ import { ModalBody, ModalPortal } from "./Modal";
 import { useStore } from "@stores/index";
 import { useCallback, useEffect, useState } from "react";
 import { DraggableMap } from "./Map";
-import { locationApiClient } from "@utils/locationApiClient";
+import { locationApiClient } from "@utils/api/locationApiClient";
 import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/solid";
 
 

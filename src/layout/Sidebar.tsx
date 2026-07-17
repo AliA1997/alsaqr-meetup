@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   DotsCircleHorizontalIcon,
   LoginIcon,
@@ -37,10 +37,7 @@ const SideBar = ({ }: SideBarProps) => {
   const registrationNotCompleted = useMemo(() => !(currentSessionUser?.isCompleted ?? false), [mounted, currentSessionUser])
 
   const openModal = () => showModal(<LoginModal />)
-  const handleDropdownEnter = useCallback(
-    () => setIsDropdownOpen(!isDropdownOpen),
-    [isDropdownOpen]
-  );
+  const handleDropdownEnter = () => setIsDropdownOpen((open) => !open);
 
   useEffect(() => {
     setMounted(true);
@@ -246,7 +243,7 @@ const SideBar = ({ }: SideBarProps) => {
                       onClick={handleDropdownEnter}
                     />
                     {isDropdownOpen && (
-                      <div className="absolute left-0 bottom-[-10] mt-2 w-48 rounded-md shadow-lg ring-1 bg-white dark:bg-[#000000] ring-black ring-opacity-5 z-[800]">
+                      <div className="absolute left-0 bottom-full mb-2 w-48 rounded-md shadow-lg ring-1 bg-white dark:bg-[#000000] ring-black ring-opacity-5 z-[800]">
                         <div
                           className="py-1"
                           role="menu"
