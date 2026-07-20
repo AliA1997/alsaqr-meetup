@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { PagingParams } from "@models/common";
-import { NoRecordsTitle, PageTitle } from "@common/Titles";
+// @ts-ignore: external URL import for runtime bundler
+import { NoRecordsTitle, PageTitle } from "https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web/dist/alsaqr-web-core.js";
 import { ContentContainerWithRef } from "@common/Containers";
 import { SkeletonLoader } from "@common/CustomLoader";
 import NotificationItemComponent from "./NotificationItem";

@@ -40,11 +40,7 @@ export interface UserItemToDisplay {
   lastName?: string;
   bannerImage?: string;
   countryOfOrigin?: string;
-  preferredMadhab?: string;
   hobbies: string[];
-  favoriteQuranReciters: string[];
-  favoriteIslamicScholars: string[];
-  islamicStudyTopics: string[];
   followingCount: number;
   followerCount: number;
   totalItems: number;
@@ -80,11 +76,6 @@ export interface User extends UserInfo {
   maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
   hobbies?: string[];
   religion?: string;
-  preferredMadhab?: string;
-  frequentMasjid?: string;
-  favoriteQuranReciters?: string[];
-  favoriteIslamicScholars?: string[];
-  islamicStudyTopics?: string[];
   following: {
     avatar?: string;
     bio?: string;
