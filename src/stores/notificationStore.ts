@@ -1,7 +1,16 @@
 import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { NotificationToDisplay } from "@typings";
 import { Pagination, PagingParams } from "@models/common";
-import agent from "@utils/api/common";
+// import agent from "@utils/api/common";
+import {
+  commonAgent,
+
+  // PagingParams,
+// @ts-ignore: external URL import for runtime bundler
+} from "https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web@v0.0.5/dist/alsaqr-web-core.js";
+
+alert(JSON.stringify(commonAgent));
+
 
 export default class NotificationStore {
 
@@ -68,7 +77,7 @@ export default class NotificationStore {
 
         this.setLoadingInitial(true);
         try {
-            const { items, pagination } = await agent.notificationApiClient.getNotifications(userId, this.axiosParams) ?? [];
+            const { items, pagination } = await commonAgent.notificationApiClient.getNotifications(userId, this.axiosParams) ?? [];
 
             runInAction(() => {
                 items.forEach((not: NotificationToDisplay) => {

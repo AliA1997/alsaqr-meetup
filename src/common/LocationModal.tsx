@@ -3,7 +3,10 @@ import { ModalBody, ModalPortal } from "./Modal";
 import { useStore } from "@stores/index";
 import { useCallback, useEffect, useState } from "react";
 import { DraggableMap } from "./Map";
-import { locationApiClient } from "@utils/api/locationApiClient";
+import {
+  commonAgent,
+// @ts-ignore: external URL import for runtime bundler
+} from "https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web@v0.0.5/dist/alsaqr-web-core.js";
 import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/solid";
 
 
@@ -17,8 +20,8 @@ export const LocationModal = observer(() => {
 
     useEffect(() => {
         if (activeMarker)
-            locationApiClient.reverseLocateAddress(activeMarker.latitude, activeMarker.longitude)
-                .then(reverseLocData => {
+            commonAgent.locationApiClient.reverseLocateAddress(activeMarker.latitude, activeMarker.longitude)
+                .then((reverseLocData: any) => {
                     const locationFeatures = reverseLocData && reverseLocData["features"] && reverseLocData["features"].length ? reverseLocData["features"][0] : undefined;
 
                     if (locationFeatures) {

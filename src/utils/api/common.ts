@@ -1,10 +1,8 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { PaginatedResult } from '../../models/common';
 import Auth from '../auth';
-import { notificationApiClient } from "./notificationApiClient";
 import { userApiClient } from "./userApiClient";
 import { messageApiClient } from "./messageApiClient";
-import { locationApiClient } from './locationApiClient';
 import { groupsApiClient } from './groupsApiClient';
 import { eventsApiClient } from './eventsApiClient';
 import { citiesApiClient } from './citiesApiClient';
@@ -126,9 +124,7 @@ const agent = {
   citiesApiClient,
   groupsApiClient,
   eventsApiClient,
-  locationApiClient,
   messageApiClient,
-  notificationApiClient,
   userApiClient
 };
 
