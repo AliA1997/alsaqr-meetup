@@ -10,14 +10,11 @@ import { useStore } from "@stores/index";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { observer } from "mobx-react-lite";
-import { LoginModal } from "@common/AuthModals";
+import { Collapsible, LocationModal, LoginModal, OptimizedImage } from "alsaqr-web-core";
 
 import { ROUTE_TO_SHOW_SETTINGS_SIDEBAR, ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { SettingsTabs, SidebarTabs } from "@models/enums";
-import { OptimizedImage } from "@common/Image";
 import SidebarRow from "./SidebarRow";
-import Collapsible from "@common/Collapsible";
-import { LocationModal } from "@common/LocationModal";
 
 type SideBarProps = {};
 
@@ -26,7 +23,7 @@ const SideBar = ({ }: SideBarProps) => {
   const location = useLocation();
   const { authStore, commonStore, modalStore, settingsStore } = useStore();
   const { auth, currentSessionUser } = authStore;
-  const { userIpInfo } = commonStore;
+  const { userIpInfo, setUserIpInfo } = commonStore;
   const { closeModal, showModal } = modalStore;
   const { currentTabIdx, setCurrentTabIdx } = settingsStore;
   const [activeTab, setActiveTab] = useState<SidebarTabs | undefined>();
@@ -36,7 +33,7 @@ const SideBar = ({ }: SideBarProps) => {
   const hideSidebar = useMemo(() => ROUTE_TO_SHOW_SETTINGS_SIDEBAR === location.pathname, [location.pathname]);
   const registrationNotCompleted = useMemo(() => !(currentSessionUser?.isCompleted ?? false), [mounted, currentSessionUser])
 
-  const openModal = () => showModal(<LoginModal />)
+  const openModal = () => showModal(<LoginModal onClose={closeModal} routesUserCantAccess={ROUTES_USER_CANT_ACCESS} />)
   const handleDropdownEnter = () => setIsDropdownOpen((open) => !open);
 
   useEffect(() => {
@@ -51,7 +48,7 @@ const SideBar = ({ }: SideBarProps) => {
     const showLoginModal = ROUTES_USER_CANT_ACCESS.some((r: string) => location.pathname.includes(r));
 
     if (notLoggedIn && showLoginModal) {
-      showModal(<LoginModal />);
+      showModal(<LoginModal onClose={closeModal} routesUserCantAccess={ROUTES_USER_CANT_ACCESS} />);
     }
 
     if (!registrationNotCompleted && currentSessionUser)
@@ -170,7 +167,15 @@ const SideBar = ({ }: SideBarProps) => {
                       title={userIpInfo?.locationDisplayName ?? "United States"}
                       onClick={() => {
                         setActiveTab(SidebarTabs.Location);
-                        showModal(<LocationModal />)
+                        showModal(
+                          <LocationModal
+                            initialCoords={userIpInfo}
+                            onClose={(location) => {
+                              if (location) setUserIpInfo(location);
+                              closeModal();
+                            }}
+                          />
+                        )
                       }}
                       active={activeTab === SidebarTabs.Location}
                       overrideOnClick={true}

@@ -5,10 +5,7 @@ import { UserIpInfo } from "@models/common";
 import { City } from "@models/city";
 import { Topic } from "@models/topic";
 import agent from "@utils/api/common";
-import {
-  commonAgent,
-// @ts-ignore: external URL import for runtime bundler
-} from "https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web@v0.0.5/dist/alsaqr-web-core.js";
+import { commonAgent } from "alsaqr-web-core";
 import { store } from ".";
 import LocalStorage from "@utils/localStorage";
 

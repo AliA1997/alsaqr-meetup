@@ -3,9 +3,8 @@ import { observer } from "mobx-react-lite";
 import toast from "react-hot-toast";
 import { useStore } from "@stores/index";
 import { GroupRecord } from "@models/group";
-import { LoginModal } from "@common/AuthModals";
-import { ConfirmModal } from "@common/Modal";
-import { CommonUpsertButton } from "@common/Buttons";
+import { CommonUpsertButton, ConfirmModal, LoginModal } from "alsaqr-web-core";
+import { ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { MessageFormDto } from "@typings";
 
 interface ContactFounderButtonProps {
@@ -46,7 +45,7 @@ const ContactFounderButton = observer(({ group }: ContactFounderButtonProps) => 
 
     const handleClick = () => {
         if (!currentSessionUser) {
-            showModal(<LoginModal />);
+            showModal(<LoginModal onClose={closeModal} routesUserCantAccess={ROUTES_USER_CANT_ACCESS} />);
             return;
         }
         if (!group.founderId) return;

@@ -5,7 +5,7 @@ import LoadingSpinner from './layout/LoadingSpinner';
 import { observer } from 'mobx-react-lite';
 import { useStore } from './stores';
 import { useCheckSession } from '@hooks/useCheckSession';
-import { SuspenseLoader } from '@common/CustomLoader';
+import { SuspenseLoader } from "alsaqr-web-core";
 
 export default observer(function ({ children }: React.PropsWithChildren<any>) {
     const { authStore } = useStore();
@@ -40,7 +40,10 @@ export default observer(function ({ children }: React.PropsWithChildren<any>) {
                 className="dark:bg-[#0e1517] min-h-screen flex flex-col justify-between overflow-hidden mb-0 pb-0"
             >
 
-                <div className="mx-auto max-h-screen overflow-hidden lg:w-6xl">
+                {/* No height clamp here: pages taller than the viewport (event/group/local
+                    guide details) must scroll with the document. Feed pages opt into their
+                    own internal scroll area, so they are unaffected. */}
+                <div className="mx-auto w-full lg:w-6xl">
                     <main className="grid grid-cols-9">
                         <Suspense
                             fallback={

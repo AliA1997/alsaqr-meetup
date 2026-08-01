@@ -1,6 +1,6 @@
 import Feed from "@components/shared/Feed";
 import { TypeOfFeeds } from "@models/enums";
-import AdminDashboardLink from "@common/AdminDashboardLink";
+import { AdminDashboardLink } from "alsaqr-web-core";
 
 export default function MyEvents() {
     return (

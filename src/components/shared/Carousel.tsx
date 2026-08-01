@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
-import { OptimizedPostImage } from "@common/Image";
+import { OptimizedPostImage } from "alsaqr-web-core";
 import { FALLBACK_POST_IMAGE_URL } from "@utils/constants";
 
 type CarouselProps = {

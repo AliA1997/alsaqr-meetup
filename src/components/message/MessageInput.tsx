@@ -1,9 +1,7 @@
-import { ButtonLoader, SkeletonLoader } from "@common/CustomLoader";
-import UpsertBoxIconButton from "@common/UpsertBoxIconButtons";
+import { ButtonLoader, DangerAlert, SkeletonLoader, UpsertBoxIconButton } from "alsaqr-web-core";
 import { motion } from "framer-motion";
 import { XIcon } from '@heroicons/react/outline';
 import React from "react";
-import { DangerAlert } from "@common/Alerts";
 
 type Props = {
     onSubmit: (e: React.FormEvent) => Promise<void>;

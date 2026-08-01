@@ -1,6 +1,5 @@
 import { useStore } from "@stores/index";
-import { InfoButton } from "@common/Buttons";
-import { ButtonLoader } from "@common/CustomLoader";
+import { ButtonLoader, InfoButton } from "alsaqr-web-core";
 import { PlusCircleIcon, TrashIcon } from "@heroicons/react/outline";
 import { observer } from "mobx-react-lite";
 

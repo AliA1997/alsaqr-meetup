@@ -2,12 +2,7 @@ import { makeAutoObservable, reaction, runInAction } from "mobx";
 import { NotificationToDisplay } from "@typings";
 import { Pagination, PagingParams } from "@models/common";
 // import agent from "@utils/api/common";
-import {
-  commonAgent,
-
-  // PagingParams,
-// @ts-ignore: external URL import for runtime bundler
-} from "https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web@v0.0.5/dist/alsaqr-web-core.js";
+import { commonAgent } from "alsaqr-web-core";
 
 
 export default class NotificationStore {

@@ -53,7 +53,7 @@ Execute tasks in order. Each task is independently verifiable and testable. Upda
 
 ## Validation
 
-- [ ] Build succeeds (`pnpm build`)
+- [ ] Build succeeds (`npm run build`)
 - [ ] Run Playwright tests: all pass
 - [ ] Manual test: Join/leave group flow end-to-end
 - [ ] Manual test: Join/leave event flow end-to-end

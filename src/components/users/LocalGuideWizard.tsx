@@ -3,8 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { useStore } from "@stores/index";
 import { HostedCity, UpsertLocalGuideRequest } from "@models/localGuide";
-import { FormTextInput, FormTextArea, FormSelectInput, SelectOption } from "@common/FormInputs";
-import { ButtonLoader } from "@common/CustomLoader";
+import { ButtonLoader, FormSelectInput, FormTextArea, FormTextInput, SelectOption } from "alsaqr-web-core";
 
 interface LocalGuideWizardProps {
     onClose: () => void;

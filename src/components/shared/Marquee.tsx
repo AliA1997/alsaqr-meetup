@@ -1,8 +1,4 @@
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem
-} from "@common/Carousels"; // make sure this path matches your actual file name
+import { Carousel, CarouselContent, CarouselItem } from "alsaqr-web-core";
 import EventCard from "@components/event/EventCard";
 import GroupCard from "@components/group/GroupCard";
 import LocalGuideCard from "@components/users/LocalGuideCard";

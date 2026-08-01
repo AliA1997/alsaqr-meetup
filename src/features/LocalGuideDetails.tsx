@@ -1,5 +1,4 @@
-import { SkeletonLoader } from "@common/CustomLoader";
-import { MapView } from "@common/Map";
+import { MapView, SkeletonLoader } from "alsaqr-web-core";
 import Marquee from "@components/shared/Marquee";
 import LocalGuideDetailsCard from "@components/users/LocalGuideDetailsCard";
 import { EntityMarker } from "@models/common";
@@ -94,7 +93,6 @@ export default observer(() => {
             />
             <MapView
                 mainCoords={mainCoords}
-                forWhat="event"
                 setActiveMarker={setActiveMarker}
                 activeMarker={activeMarker}
                 onlyDisplay={true}

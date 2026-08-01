@@ -12,12 +12,10 @@ import {
 import { FilterKeys, useStore } from "@stores/index";
 import { shortenText } from "@utils/index";
 import { MAX_BIO_LENGTH_FEED } from "@utils/constants";
-import { ButtonLoader } from "@common/CustomLoader";
+import { AbsoluteDangerButton, AbsoluteSuccessButton, ButtonLoader, OptimizedImage } from "alsaqr-web-core";
 import { XIcon } from "@heroicons/react/solid";
 import { CheckIcon } from "@heroicons/react/outline";
 import { observer } from "mobx-react-lite";
-import { AbsoluteDangerButton, AbsoluteSuccessButton } from "@common/Buttons";
-import { OptimizedImage } from "@common/Image";
 
 interface Props {
     userItemToDisplay: UserItemToDisplay;

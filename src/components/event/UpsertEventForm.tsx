@@ -4,8 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router";
 import { useStore } from "@stores/index";
 import { EventRecord, UpsertEventRequest } from "@models/event";
-import { FormTextInput, FormTextArea, FormAutocompleteInput, FormImageInput, FormCheckboxInput, SelectOption } from "@common/FormInputs";
-import { ButtonLoader } from "@common/CustomLoader";
+import { ButtonLoader, FormAutocompleteInput, FormCheckboxInput, FormImageInput, FormTextArea, FormTextInput, SelectOption } from "alsaqr-web-core";
 
 interface UpsertEventFormProps {
     // When provided the form edits this event, otherwise it creates a new one.

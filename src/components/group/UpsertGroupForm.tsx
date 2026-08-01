@@ -3,8 +3,7 @@ import { Form, Formik, FormikHelpers } from "formik";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { GroupRecord, UpsertGroupRequest } from "@models/group";
-import { FormTextInput, FormTextArea, FormAutocompleteInput, FormImageInput, SelectOption } from "@common/FormInputs";
-import { ButtonLoader } from "@common/CustomLoader";
+import { ButtonLoader, FormAutocompleteInput, FormImageInput, FormTextArea, FormTextInput, SelectOption } from "alsaqr-web-core";
 import TopicAutocomplete from "./TopicAutocomplete";
 import agent from "@utils/api/common";
 

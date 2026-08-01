@@ -1,4 +1,4 @@
-import { OptimizedImage, OptimizedPostImage } from "@common/Image";
+import { OptimizedImage, OptimizedPostImage } from "alsaqr-web-core";
 import { convertDateToDisplay } from "@utils/index";
 import TimeAgo from "react-timeago";
 import { MessageToDisplay } from "typings";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SkeletonLoader } from "@common/CustomLoader";
+import { OptimizedPostImage, SkeletonLoader } from "alsaqr-web-core";
 import { groupsApiClient } from "@utils/api/groupsApiClient";
 import { eventsApiClient } from "@utils/api/eventsApiClient";
 import { EventMember } from "@models/event";
@@ -7,7 +7,6 @@ import { observer } from "mobx-react-lite";
 import TimeAgo from "react-timeago";
 import { convertDateToDisplay } from "@utils/index";
 import { TrashIcon } from "@heroicons/react/outline";
-import { OptimizedPostImage } from "@common/Image";
 
 interface EventMembersProps {
   // The roster is fetched by slug; removals are keyed by id.

@@ -11,11 +11,9 @@ import {
     stopPropagationOnClick,
 } from "@utils/index";
 import { useStore } from "@stores/index";
-import { LoginModal } from "@common/AuthModals";
+import { AddOrFollowButton, LoginModal, OptimizedImage } from "alsaqr-web-core";
 import { shortenText } from "@utils/index";
-import { MAX_BIO_LENGTH_FEED } from "@utils/constants";
-import { AddOrFollowButton } from "@common/IconButtons";
-import { OptimizedImage } from "@common/Image";
+import { MAX_BIO_LENGTH_FEED, ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { FilterKeys } from '@enums';
 
 
@@ -59,7 +57,7 @@ function UserItemComponent({
     const checkUserIsLoggedInBeforeUpdatingUserItem = async (
         callback: () => Promise<void>
     ) => {
-        if (!loggedInUserId) return showModal(<LoginModal />)
+        if (!loggedInUserId) return showModal(<LoginModal onClose={closeModal} routesUserCantAccess={ROUTES_USER_CANT_ACCESS} />)
 
         await callback();
     };

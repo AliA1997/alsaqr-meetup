@@ -1,5 +1,4 @@
-import { OptimizedImage } from "@common/Image";
-import { TagOrLabel } from "@common/Titles";
+import { OptimizedImage, TagOrLabel } from "alsaqr-web-core";
 import type { EventMember } from "@models/event";
 import type { GroupMember } from "@models/group";
 import { ALSAQR_PROFILE_BASE } from "@utils/constants";

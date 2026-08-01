@@ -6,12 +6,8 @@ import { store } from '@stores/index.ts';
 import { RouterProvider } from 'react-router';
 import { router } from './router/index.tsx';
 
-import {
-  configureAlSaqr,
-
-  // PagingParams,
-// @ts-ignore: external URL import for runtime bundler
-} from "https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web@v0.0.5/dist/alsaqr-web-core.js";
+import { configureAlSaqr } from "alsaqr-web-core";
+import "alsaqr-web-core/coreStyles.css";
 
 
 configureAlSaqr({

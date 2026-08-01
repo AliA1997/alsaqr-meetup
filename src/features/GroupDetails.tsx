@@ -1,5 +1,5 @@
-import { SkeletonLoader } from "@common/CustomLoader";
-import { MapView } from "@common/Map";
+import { MapView, SkeletonLoader } from "alsaqr-web-core";
+import GroupCard from "@components/group/GroupCard";
 import GroupDetailsCard from "@components/group/GroupDetailsCard";
 import GroupMemberCard from "@components/group/GroupMemberCard";
 import Marquee from "@components/shared/Marquee";
@@ -104,12 +104,18 @@ export default observer(() => {
             } as EntityMarker;
     }, [loadedGroupDetails])
 
+    // MapView keys its marker popups off MapRecord.title; group records carry the
+    // equivalent value in `name`.
+    const similarGroupMapRecords = useMemo(
+        () => loadedSimilarGroups?.map((group) => ({ ...group, title: group.name })),
+        [loadedSimilarGroups]
+    );
 
     if(!loadedGroupDetails || !loadedSimilarGroups)
         return <SkeletonLoader count={6} />;
 
     return (
-        <div className="h-screen">
+        <div className="min-h-screen">
             <GroupDetailsCard group={loadedGroupDetails} onRefresh={getGroupDetails} />
             <div data-testid="groupmembers" className="flex flex-col text-left">
                 <h3 className="text-xl font-bold md:text-xl pl-4">Members:</h3>
@@ -135,8 +141,16 @@ export default observer(() => {
             </div>
             <MapView
                 mainCoords={mainCoords}
-                forWhat="group"
-                similarRecords={loadedSimilarGroups}
+                similarRecords={similarGroupMapRecords}
+                renderActiveRecord={(group) => (
+                    <GroupCard
+                        testId="similarmapgroupcard"
+                        group={group}
+                        showDistance={true}
+                        classNames={"h-96 absolute top-0 right-0 z-[50]"}
+                        imageClassNames={"h-48 w-48"}
+                    />
+                )}
                 setActiveMarker={setActiveMarker}
                 activeMarker={activeMarker}
             />

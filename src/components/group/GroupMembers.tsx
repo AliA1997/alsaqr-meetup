@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SkeletonLoader } from "@common/CustomLoader";
+import { SkeletonLoader } from "alsaqr-web-core";
 import { groupsApiClient } from "@utils/api/groupsApiClient";
 import { GroupMember } from "@models/group";
 import { observer } from "mobx-react-lite";

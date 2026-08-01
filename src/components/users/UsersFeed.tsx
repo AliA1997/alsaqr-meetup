@@ -5,11 +5,9 @@ import type {
 
 import { useSearchParams } from "react-router-dom";
 import { convertQueryStringToObject } from "@utils/index";
-import { ModalLoader } from "@common/CustomLoader";
+import { ContentContainerWithRef, ModalLoader, PageTitle } from "alsaqr-web-core";
 import { observer } from "mobx-react-lite";
 import { FilterKeys, useStore } from "@stores/index";
-import { PageTitle } from "@common/Titles";
-import { ContentContainerWithRef } from "@common/Containers";
 import { PagingParams } from "@models/common";
 import UserItemComponent from "./UserItem";
 

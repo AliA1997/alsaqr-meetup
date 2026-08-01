@@ -2,8 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useLocation, useNavigate } from "react-router";
 import { useStore } from "@stores/index";
 import { EventRecord } from "@models/event";
-import { ModalBody, ModalPortal, ConfirmModal } from "@common/Modal";
-import { AbsoluteDangerButton, InfoButton } from "@common/Buttons";
+import { AbsoluteDangerButton, ConfirmModal, InfoButton, ModalBody, ModalPortal } from "alsaqr-web-core";
 import UpsertEventForm from "./UpsertEventForm";
 
 interface EventOwnerActionsProps {

@@ -4,8 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { PagingParams } from "@models/common";
 import { leadingDebounce } from "@utils/api/common";
-import { ContentContainerWithRef } from "@common/Containers";
-import { NoRecordsTitle } from "@common/Titles";
+import { ContentContainerWithRef, NoRecordsTitle, SkeletonLoader } from "alsaqr-web-core";
 
 import { TypeOfFeeds } from "@models/enums";
 import GroupCard from "@components/group/GroupCard";
@@ -13,7 +12,6 @@ import { GroupRecord } from "@models/group";
 import { EventRecord } from "@models/event";
 import EventCard from "@components/event/EventCard";
 import LocalGuideCard from "@components/users/LocalGuideCard";
-import { SkeletonLoader } from "@common/CustomLoader";
 
 
 interface Props {

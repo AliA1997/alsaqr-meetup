@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useField } from "formik";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
-import { FormAutocompleteInput, SelectOption } from "@common/FormInputs";
+import { FormAutocompleteInput, SelectOption } from "alsaqr-web-core";
 
 interface TopicAutocompleteProps {
     // Formik field holding the selected topic names (string[]).

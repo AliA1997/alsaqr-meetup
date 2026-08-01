@@ -3,15 +3,12 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { GroupRecord } from "@models/group";
 import { EventRecord } from "@models/event";
-import Tabs from "@common/Tabs";
-import { OptimizedImage } from "@common/Image";
-import { CommonLink } from "@common/Links";
+import { CommonLink, CreateEntityButton, OptimizedImage, Tabs } from "alsaqr-web-core";
 import GroupCard from "@components/group/GroupCard";
+import UpsertGroupForm from "@components/group/UpsertGroupForm";
 import EventCard from "@components/event/EventCard";
 import GroupOwnerActions from "@components/group/GroupOwnerActions";
 import EventOwnerActions from "@components/event/EventOwnerActions";
-import CreateEntityButton from "@common/CreateEntityButton";
-import { TypeOfFeeds } from "@models/enums";
 
 // Public AlSaqr social profile host. The dashboard links a member back to their main
 // AlSaqr identity at `<alsaqr>/users/<username>`.
@@ -119,7 +116,10 @@ const AdminDashboard = observer(() => {
                                     >
                                         View on AlSaqr
                                     </CommonLink>
-                                    <CreateEntityButton typeOfFeed={TypeOfFeeds.MyGroups} />
+                                    <CreateEntityButton
+                                        label="Create Group"
+                                        renderForm={(close) => <UpsertGroupForm onClose={close} />}
+                                    />
 
                                     </>
                                 ) : null}

@@ -1,5 +1,4 @@
-import { MessagesImagePreview } from "@common/Containers";
-import { GoBackButton } from "@common/IconButtons";
+import { GoBackButton, MessagesImagePreview } from "alsaqr-web-core";
 import { User } from "typings";
 
 type Props = {

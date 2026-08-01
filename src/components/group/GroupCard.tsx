@@ -1,5 +1,4 @@
-import { OptimizedPostImage } from "@common/Image";
-import { TagOrLabel } from "@common/Titles";
+import { OptimizedPostImage, TagOrLabel } from "alsaqr-web-core";
 import { HowSimilarKeys } from "@models/enums";
 import type { GroupRecord } from "@models/group";
 import { useStore } from "@stores/index";

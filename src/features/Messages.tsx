@@ -1,5 +1,4 @@
-import { ModalLoader } from "@common/CustomLoader";
-import { NoRecordsTitle } from "@common/Titles";
+import { ModalLoader, NoRecordsTitle } from "alsaqr-web-core";
 import MessageContent from "@components/message/MessageContent";
 import MessageHeader from "@components/message/MessageHeader";
 import MessageHistoryItemComponent from "@components/message/MessageHistoryItem";

@@ -3,10 +3,8 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { PagingParams } from "@models/common";
 // @ts-ignore: external URL import for runtime bundler
-import { ContentContainerWithRef } from "@common/Containers";
-import { SkeletonLoader } from "@common/CustomLoader";
+import { ContentContainerWithRef, NoRecordsTitle, PageTitle, SkeletonLoader } from "alsaqr-web-core";
 import NotificationItemComponent from "./NotificationItem";
-import { NoRecordsTitle, PageTitle } from "@common/Titles";
 
 interface Props {}
 

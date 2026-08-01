@@ -1,5 +1,5 @@
-import { SkeletonLoader } from "@common/CustomLoader";
-import { MapView } from "@common/Map";
+import { MapView, SkeletonLoader } from "alsaqr-web-core";
+import EventCard from "@components/event/EventCard";
 import EventDetailsCard from "@components/event/EventDetailsCard";
 import GroupMemberCard from "@components/group/GroupMemberCard";
 import Marquee from "@components/shared/Marquee";
@@ -105,6 +105,13 @@ export default observer(() => {
 
     }, [loadedEventDetails])
 
+    // MapView keys its marker popups off MapRecord.title; event records carry the
+    // equivalent value in `name`.
+    const similarEventMapRecords = useMemo(
+        () => loadedSimilarEvents?.map((event) => ({ ...event, title: event.name })),
+        [loadedSimilarEvents]
+    );
+
     if (!loadedEventDetails || !loadedSimilarEvents)
         return <SkeletonLoader count={6} />;
 
@@ -128,8 +135,24 @@ export default observer(() => {
             </div>
             <MapView
                 mainCoords={mainCoords}
-                forWhat="event"
-                similarRecords={loadedSimilarEvents}
+                similarRecords={similarEventMapRecords}
+                getRecordCoords={(event) => {
+                    const lastCityHosted = event.citiesHosted?.length
+                        ? event.citiesHosted[event.citiesHosted.length - 1]
+                        : undefined;
+                    return lastCityHosted
+                        ? [lastCityHosted.latitude, lastCityHosted.longitude]
+                        : null;
+                }}
+                renderActiveRecord={(event) => (
+                    <EventCard
+                        testId="similarmapeventcard"
+                        event={event}
+                        showDistance={true}
+                        classNames={"h-96 absolute top-0 right-0 z-[50]"}
+                        imageClassNames={"h-48 w-48"}
+                    />
+                )}
                 setActiveMarker={setActiveMarker}
                 activeMarker={activeMarker}
             />

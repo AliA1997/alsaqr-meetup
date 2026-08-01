@@ -1,8 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
-import { ModalBody, ModalPortal } from "@common/Modal";
-import { LoginModal } from "@common/AuthModals";
-import { CommonUpsertButton } from "@common/Buttons";
+import { CommonUpsertButton, LoginModal, ModalBody, ModalPortal } from "alsaqr-web-core";
+import { ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { PlusIcon } from "@heroicons/react/outline";
 import UpsertEventForm from "./UpsertEventForm";
 
@@ -26,7 +25,7 @@ const CreateEventButton = observer(({ groupId, onUpdated }: CreateEventButtonPro
 
     const handleClick = () => {
         if (!currentSessionUser) {
-            showModal(<LoginModal />);
+            showModal(<LoginModal onClose={closeModal} routesUserCantAccess={ROUTES_USER_CANT_ACCESS} />);
             return;
         }
         showModal(

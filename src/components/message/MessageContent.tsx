@@ -1,7 +1,6 @@
-import { SkeletonLoader } from "@common/CustomLoader";
+import { NoRecordsTitle, SkeletonLoader } from "alsaqr-web-core";
 import { MessageToDisplay } from "typings";
 import MessageItem from "./MessageItem";
-import { NoRecordsTitle } from "@common/Titles";
 
 type Props = {
     loggedInUserId: string | undefined;

@@ -1,4 +1,4 @@
-import { OptimizedPostImage } from "@common/Image";
+import { OptimizedPostImage } from "alsaqr-web-core";
 import { EntityMarker } from "@models/common";
 import type { LocalGuideDetailsRecord } from "@models/localGuide";
 import { openGoogleMaps } from "@utils/functions";

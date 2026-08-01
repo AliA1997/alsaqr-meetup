@@ -1,10 +1,9 @@
 import React, { ReactElement, SVGProps, useMemo } from "react";
 import { nonRoutableTitles } from "@utils/index";
-import { CommonLink, CommonLinkProps } from "@common/Links";
+import { CommonLink, CommonLinkProps, LoginModal } from "alsaqr-web-core";
 import { DELETE_YOUR_ACCOUNT, ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
-import { LoginModal } from "@common/AuthModals";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@utils/supabase";
 
@@ -36,7 +35,7 @@ function SidebarRow({
 }: SidebarRowProps) {
   const { authStore, modalStore } = useStore();
   const { auth, currentSessionUser, setCurrentSessionUser } = authStore;
-  const { showModal } = modalStore;
+  const { showModal, closeModal } = modalStore;
   const navigate = useNavigate();
   const notLoggedIn = useMemo(() => !auth?.isLoggedIn(), [currentSessionUser]);
 
@@ -50,7 +49,7 @@ function SidebarRow({
 
 
       if (notLoggedIn && ROUTES_USER_CANT_ACCESS.some(r => r.includes(href!)))
-        showModal(<LoginModal />)
+        showModal(<LoginModal onClose={closeModal} routesUserCantAccess={ROUTES_USER_CANT_ACCESS} />)
       else
         navigate(href!);
 
