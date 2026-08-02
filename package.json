@@ -12,9 +12,7 @@
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
-    "@gradio/client": "^2.3.0",
     "@heroicons/react": "^1.0.6",
-    "@supabase/supabase-js": "^2.77.0",
     "alsaqr-web-core": "git+https://github.com/AliA1997/alsaqr-core-web.git#v0.0.7",
     "axios": "^1.13.1",
     "dotenv": "^17.2.3",

@@ -38,7 +38,7 @@ export default observer(function GroupDetailsCard({
       <section className="flex w-full flex-col py-4 md:flex-row">
         <Carousel images={group.images} entityName={group.name} />
 
-        <div className="flex w-full flex-col items-center space-y-4 px-0 py-2 md:w-1/2 md:px-4 lg:px-12">
+        <div className="flex w-full md:w-1/2  flex-col items-center space-y-4 px-0 py-2 md:px-4 lg:px-12">
           <p className="p-2 text-[2rem] font-bold md:text-[2.5rem]">{group.name}</p>
           {isJoined && (
             <div className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded-full text-sm font-medium">

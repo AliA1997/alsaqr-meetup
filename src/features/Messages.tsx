@@ -8,7 +8,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { MessageFormDto, MessageHistoryToDisplay } from "@typings";
-import { checkNsfwInImage, initializeClient } from "@utils/infrastructure/gradio";
+import { checkNsfwInImage, initializeClient } from "alsaqr-web-core";
 import { NOT_ALLOWED_NSFW_CHECKER_RESULTS } from "@utils/constants";
 
 

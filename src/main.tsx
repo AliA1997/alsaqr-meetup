@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router';
 import { router } from './router/index.tsx';
 
 import { configureAlSaqr } from "alsaqr-web-core";
-import "alsaqr-web-core/coreStyles.css";
+import "leaflet/dist/leaflet.css";
 
 
 configureAlSaqr({

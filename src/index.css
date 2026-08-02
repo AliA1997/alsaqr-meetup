@@ -1,6 +1,18 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* NOTE: alsaqr-web-core ships `coreStyles.css`, which is a *second complete
+   Tailwind v4 build*. Loading it alongside this one put two `@layer utilities`
+   blocks in the same cascade layer, so the vendor sheet's bare utilities
+   (`.flex-col`, `.items-center`, …) came later in document order and beat this
+   build's responsive variants (`md:flex-row`, …) at equal specificity — the
+   variant simply never applied at any width.
+   Instead we scan the package's compiled output so this build emits the
+   utilities its components need. One Tailwind build, one correct sort order.
+   Leaflet's stylesheet was riding along inside coreStyles.css, so main.tsx now
+   imports it directly from the `leaflet` package. */
+@source "../node_modules/alsaqr-web-core/dist";
+
 /* NOTE: The default Vite template ships global `button`, `a`, and `:root`
    color rules here. Those rules are NOT inside a Tailwind cascade layer, so in
    Tailwind v4 they win over every layered utility (`@layer utilities`) — which
@@ -19,6 +31,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 
 body {
   margin: 0;
@@ -78,87 +91,4 @@ h1 {
   align-items: center;
   font-style: italic;
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-
-
-@keyframes wave {
-  0% {
-    clip-path: polygon(
-      0% 38%,
-      21% 40%,
-      38% 51%,
-      54% 57%,
-      75% 57%,
-      100% 52%,
-      100% 100%,
-      0 100%
-    );
-  }
-  50% {
-    clip-path: polygon(
-      0% 49%,
-      16% 56%,
-      33% 55%,
-      55% 50%,
-      75% 42%,
-      100% 40%,
-      100% 100%,
-      0 100%
-    );
-  }
-  100% {
-    clip-path: polygon(
-      0% 38%,
-      21% 40%,
-      38% 51%,
-      54% 57%,
-      75% 57%,
-      100% 52%,
-      100% 100%,
-      0 100%
-    );
-  }
-}
-
-.wave {
-  position: relative;
-  width: 200px;
-  height: 200px;
-}
-
-.wave h2 {
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: absolute;
-  text-align: center;
-  line-height: 175px;
-  font-size: 50px;
-  text-transform: uppercase;
-  padding-left: 3rem;
-}
-
-.wave h2:nth-child(1) {
-  color: transparent;
-  -webkit-text-stroke: 2px #55a8c2;
-}
-
-.wave h2:nth-child(2) {
-  color: #55a8c2;
-  /*   clip-path: polygon(0 50%, 100% 50%, 100% 0, 0 0); */
-  animation: wave 2s ease-in-out infinite;
-}
-@media screen and (min-width: 768px) {
-  .wave {
-    position: relative;
-    width: 300px;
-    height: 300px;
-  }
-
-  .wave h2 {
-    line-height: 250px;
-    font-size: 80px;
-    padding-left: 0rem;
-  }
-  
 }

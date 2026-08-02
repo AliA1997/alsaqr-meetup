@@ -5,7 +5,7 @@ import { DELETE_YOUR_ACCOUNT, ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@stores/index";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@utils/supabase";
+import { getSupabase } from "alsaqr-web-core";
 
 interface SidebarRowProps {
   Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
@@ -59,7 +59,7 @@ function SidebarRow({
     else {
       if (title === SIGN_IN_TITLE || title === MORE_TITLE || overrideOnClick) onClick!(e);
       if (title === SIGN_OUT_TITLE) {
-        await supabase.auth.signOut();
+        await getSupabase().auth.signOut();
         auth?.clearUser();
         setCurrentSessionUser(undefined);
       };

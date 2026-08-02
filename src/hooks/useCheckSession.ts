@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { supabase } from "@utils/supabase";
+import { getSupabase } from "alsaqr-web-core";
 import Auth from "@utils/auth";
 import { User } from "typings";
 import { useLocation } from "react-router";
@@ -9,7 +9,7 @@ export function useCheckSession(setState: Function, sessionUser: User | undefine
   const { pathname } = useLocation();
   const auth = new Auth();
   async function getSetSession() {
-    const sessionInfo = await supabase.auth.getSession();
+    const sessionInfo = await getSupabase().auth.getSession();
     if (sessionInfo && sessionInfo.data.session) {
       // The jwt cookie is the authoritative source for the bearer token attached
       // by the axios request interceptor; keep it in sync with the live session.
