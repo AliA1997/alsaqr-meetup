@@ -6,8 +6,9 @@ import { store } from '@stores/index.ts';
 import { RouterProvider } from 'react-router';
 import { router } from './router/index.tsx';
 
-import { configureAlSaqr } from "alsaqr-web-core";
+import { configureAlSaqr, useTheme } from "alsaqr-web-core";
 import "leaflet/dist/leaflet.css";
+import { initialState } from './ThemeProvider.tsx';
 
 
 configureAlSaqr({
@@ -22,7 +23,11 @@ configureAlSaqr({
     testMode: import.meta.env.VITE_DEBUG_MODE,
     locationApiUrl: import.meta.env.VITE_PUBLIC_IP_LOC_API,
     locationReverseApiUrl: import.meta.env.VITE_PUBLIC_REVERSE_LOC_API,
+    theme: initialState.theme,
+    setTheme: initialState.setTheme,
+    themeProviderHook: useTheme
 });
+
 
 store.commonStore.loadIpInfo().then(() => console.log('loaded ip info'));
 store.authStore.initializeFromStorage().then(() => console.log("Welcome to alsaqr"));

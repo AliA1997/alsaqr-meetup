@@ -40,7 +40,7 @@ const PageContainer = ({
   return (
     <>
       <SideBar />
-      <div className="col-span-7 lg:col-span-7">
+      <div className="col-span-9 min-w-0 lg:col-span-9">
         {children ? children : null}
       </div>
       {modalToShow && modalToShow}

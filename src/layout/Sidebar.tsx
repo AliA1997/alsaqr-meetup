@@ -10,11 +10,12 @@ import { useStore } from "@stores/index";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { observer } from "mobx-react-lite";
-import { Collapsible, LocationModal, LoginModal, OptimizedImage } from "alsaqr-web-core";
+import { Collapsible, LocationModal, LoginModal, OptimizedImage, SkeletonLoader } from "alsaqr-web-core";
 
 import { ROUTE_TO_SHOW_SETTINGS_SIDEBAR, ROUTES_USER_CANT_ACCESS } from "@utils/constants";
 import { SettingsTabs, SidebarTabs } from "@models/enums";
-import SidebarRow from "./SidebarRow";
+const SidebarRow = React.lazy(() => import("./SidebarRow"));
+
 
 type SideBarProps = {};
 
@@ -61,27 +62,28 @@ const SideBar = ({ }: SideBarProps) => {
   return (
     <>
       <div className={`
-          ${hideSidebar ? 'col-span-2' : 'col-span-1 md:col-span-2'}
-          flex flex-col items-center mt-2 md:mt-0 md:px-4 md:items-start
+          ${hideSidebar ? 'col-span-2' : 'col-span-2 md:col-span-2'}
+          flex flex-col item-start md:item-center mt-2 md:mt-0 px-1 md:px-4 md:items-start
           overflow-y-auto scrollbar-hide
-          max-h-[90vh] lg:max-h-[90vh]
         `}
         onClick={() => setIsDropdownOpen(false)}
-      >          
-          <div className="flex justify-start">
-            <img
-              data-testid="navlogo"
-              className={`
+      >
+        <div className="flex justify-start">
+          <img
+            data-testid="navlogo"
+            className={`
                 m-0 h-full w-full md:w-[90%] transition-all duration-200 
                 sidebarLogo
                 cursor-pointer
             `}
-              alt=""
-              style={{ maxWidth: "unset" }}
-              onClick={() => navigate("/")}
-            />
-          </div>
-          <>
+            alt=""
+            style={{ maxWidth: "unset" }}
+            onClick={() => navigate("/")}
+          />
+        </div>
+        <>
+          <React.Suspense fallback={<SkeletonLoader count={8} />}>
+
             {hideSidebar
               ? (
                 <>
@@ -107,7 +109,7 @@ const SideBar = ({ }: SideBarProps) => {
                     onClick={() => setActiveTab(SidebarTabs.Notifications)}
                     active={activeTab === SidebarTabs.Notifications}
                   />
-                  <SidebarRow 
+                  <SidebarRow
                     IconImage={
                       <>
                         <img
@@ -117,8 +119,8 @@ const SideBar = ({ }: SideBarProps) => {
                         />
                       </>
                     }
-                    title="Inbox" 
-                    href="/messages" 
+                    title="Inbox"
+                    href="/messages"
                     onClick={() => setActiveTab(SidebarTabs.Inbox)}
                     active={activeTab === SidebarTabs.Inbox}
                   />
@@ -257,10 +259,10 @@ const SideBar = ({ }: SideBarProps) => {
                         >
                           {currentSessionUser ? (
                             <>
-                              <SidebarRow 
-                                Icon={CogIcon} 
-                                title="Settings" 
-                                isShow={true} 
+                              <SidebarRow
+                                Icon={CogIcon}
+                                title="Settings"
+                                isShow={true}
                                 overrideOnClick={true}
                                 onClick={() => {
                                   window.location.href = `${import.meta.env.VITE_PUBLIC_ALSAQR_URL}/settings`;
@@ -282,17 +284,17 @@ const SideBar = ({ }: SideBarProps) => {
                   {currentSessionUser && currentSessionUser.id && (
                     <>
                       <hr />
-                      
+
                       <div
-                        onClick={() =>{
+                        onClick={() => {
                           setActiveTab(undefined);
                           navigate("/admin");
                         }}
                         className={`
-                            group flex max-w-fit
-                            cursor-pointer items-center space-x-2 rounded-full px-1 md:px-4 py-1 py-3
-                            transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-600 mb-1 mt-1 
-                          `}
+                              group flex max-w-fit
+                              cursor-pointer items-center space-x-2 rounded-full px-1 md:px-4 py-1 py-3
+                              transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-600 mb-1 mt-1 
+                            `}
                       >
                         <OptimizedImage
                           classNames="m-0 mt-3 w-full h-8 md:h-14 md:w-14 rounded-full"
@@ -301,10 +303,10 @@ const SideBar = ({ }: SideBarProps) => {
                         />
                         {/* <div className="flex flex-col justify-center  p-3 opacity-50 text-xs sm:text-sm lg:text-md"> */}
                         <div className={`
-                            flex flex-col display-none md:display-initial hidden 
-                            group-hover:text-[#55a8c2] dark:text-gray-50
-                            md:inline-flex text-base font-light text-xs lg:text-sm
-                          `}>
+                              flex flex-col display-none md:display-initial hidden 
+                              group-hover:text-[#55a8c2] dark:text-gray-50
+                              md:inline-flex text-base font-light text-xs lg:text-sm
+                            `}>
                           <p>{currentSessionUser?.username}</p>
                           <p className="ml-2">@{getEmailUsername(currentSessionUser?.username)}</p>
                         </div>
@@ -313,7 +315,8 @@ const SideBar = ({ }: SideBarProps) => {
                   )}
                 </>
               )}
-          </>
+          </React.Suspense>
+        </>
       </div>
     </>
   );

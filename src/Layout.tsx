@@ -43,8 +43,8 @@ export default observer(function ({ children }: React.PropsWithChildren<any>) {
                 {/* No height clamp here: pages taller than the viewport (event/group/local
                     guide details) must scroll with the document. Feed pages opt into their
                     own internal scroll area, so they are unaffected. */}
-                <div className="mx-auto w-full lg:w-6xl">
-                    <main className="grid grid-cols-9">
+                <div className="mx-auto w-full lg:w-6xl flex-1">
+                    <main className="grid grid-cols-12">
                         <Suspense
                             fallback={
                                 <LoadingSpinner color="text-green-500" size="w-8 h-8" />
