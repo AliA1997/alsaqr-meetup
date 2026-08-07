@@ -13,7 +13,7 @@
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
     "@heroicons/react": "^1.0.6",
-    "alsaqr-web-core": "git+https://github.com/AliA1997/alsaqr-core-web.git#v0.0.10a",
+    "alsaqr-web-core": "github:AliA1997/alsaqr-core-web#v.0.0.10a",
     "axios": "^1.13.1",
     "dotenv": "^17.2.3",
     "embla-carousel-autoplay": "^8.6.0",
